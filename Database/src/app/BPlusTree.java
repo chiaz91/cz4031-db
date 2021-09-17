@@ -6,14 +6,20 @@ import app.util.Log;
 import java.util.ArrayList;
 
 public class BPlusTree {
+    private static final String TAG = "B+Tree";
     private static final int SIZE_POINTER = 6; // for 64 bits system
     private static final int SIZE_KEY = 4; // for int value
     int maxKeys;
+    int parentMinKeys;
+    int leafMinKeys;
 
     public BPlusTree(int blockSize){
-        // TODO: calculate numkeys?
+        // TODO: calculate n (max number of keys)?
         maxKeys = (blockSize-SIZE_POINTER) / (SIZE_KEY+SIZE_POINTER);
-        Log.i("BPlusTree.init: blockSize = "+blockSize+", maxKeys = "+maxKeys);
+        parentMinKeys = (int) Math.floor(maxKeys/2);
+        leafMinKeys = (int) Math.floor((maxKeys+1)/2);
+        Log.i(TAG, "init: blockSize = "+blockSize+", maxKeys = "+maxKeys);
+        Log.i(TAG, "MinKeys: parent="+parentMinKeys+", leaf="+leafMinKeys);
     }
 
 //    private abstract static class Node{

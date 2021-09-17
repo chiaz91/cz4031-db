@@ -5,6 +5,7 @@ import app.util.Log;
 import java.util.ArrayList;
 
 public class Disk {
+    private static final String TAG = "Disk";
     int diskSize;
     int maxBlockCount;
     int blockSize;
@@ -77,9 +78,8 @@ public class Disk {
 
     // debugs only
     public void log(){
-        Log.i("Disk Information");
-        Log.i("- diskSize = "+diskSize+", blockSize = "+blockSize);
-        Log.i("- records = "+recordCounts);
-        Log.i("- blocks = "+blocks.size() + " / "+maxBlockCount);
+        Log.i(TAG,"diskSize = "+diskSize+", blockSize = "+blockSize);
+        Log.i(TAG,"records = "+recordCounts);
+        Log.i(TAG,"blocks = "+blocks.size() + " / "+maxBlockCount);
     }
 }
