@@ -8,7 +8,7 @@ import app.util.Log;
 import app.util.Utility;
 
 public class MainApp {
-	static final int DISK_SIZE  = 100*1024*1024;
+	static final int DISK_SIZE  = 100*1000*1000;
 	static final int BLOCK_SIZE  = 100;
 
 	public static void main(String[] args) {

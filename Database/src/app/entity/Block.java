@@ -17,14 +17,6 @@ public class Block {
     }
 
     public boolean isAvailable(){
-//        boolean hasSpace = false;
-//        for (int i = 0; i < data.length ; i++) {
-//            if (data[i] == null ){
-//                hasSpace = true;
-//                break;
-//            }
-//        }
-//        return hasSpace;
         return curRecords<maxRecords;
     }
 

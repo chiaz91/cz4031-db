@@ -5,7 +5,7 @@ public class Record {
 	// make it public access first, getter and setter come later 
 	public String key; // assume 10 chars, so it's 10 bytes
 	// TODO: change to float?
-	public double avgRating; // float is 4 bytes, double is 8 bytes
+	public float avgRating; // float is 4 bytes, double is 8 bytes
 	public int numVotes; // int is 4 bytes
 	
 	public Record(String key, float avgRating, int numVotes) {
@@ -16,7 +16,7 @@ public class Record {
 
 	// theoretical size in bytes
 	public static int size(){
-		return 10+8+4;
+		return 10+4+4;
 	}
 
 	@Override

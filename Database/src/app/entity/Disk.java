@@ -54,6 +54,7 @@ public class Disk {
             Log.d("records inserted at "+index+" with offset "+offset);
         }
         recordCounts++;
+        // TODO return Address(blockId, offset)
     }
 
     public int getBlocksCount(){
