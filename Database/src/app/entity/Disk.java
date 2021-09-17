@@ -20,7 +20,7 @@ public class Disk {
         log();
     }
 
-    public void insertRecord(Record record) throws Exception {
+    public Address insertRecord(Record record) throws Exception {
         Block block;
         int index =-1;
         int offset = -1;
@@ -54,7 +54,16 @@ public class Disk {
             Log.d("records inserted at "+index+" with offset "+offset);
         }
         recordCounts++;
+        return new Address(index, offset);
         // TODO return Address(blockId, offset)
+    }
+
+    public Record getRecord(int blockId, int offset){
+        return blocks.get(blockId).getRecordAt(offset);
+    }
+
+    public Record getRecord(Address address){
+        return getRecord(address.getBlockId(), address.getOffset());
     }
 
     public int getBlocksCount(){
