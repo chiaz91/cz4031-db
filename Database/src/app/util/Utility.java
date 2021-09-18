@@ -12,10 +12,16 @@ import app.entity.Record;
 
 
 public class Utility {
-	
-	public static List<Record> readRecord(String path) throws Exception {
-		Log.d("attempt to load "+path);
+	private static final String TAG = "Utility";
 
+	/**
+	 * Loading and parsing the records from .tsv file
+	 * @param path path to .tsv file
+	 * @return list of records
+	 * @throws Exception
+	 */
+	public static List<Record> readRecord(String path) throws Exception {
+		Log.d(TAG, "attempt to load "+path);
 		File file = new File(path);
 		if (!file.exists()) {
 			throw new FileNotFoundException("File not exist");
@@ -46,8 +52,23 @@ public class Utility {
 				}
 			}
 		}
-		Log.i("total records: "+records.size());
+		Log.d(TAG, "total records: "+records.size());
 		Analyzer.log();
 		return records;
+	}
+
+	/**
+	 * Convert file size into human-readable format
+	 * @param size file size in bytes
+	 * @return formatted size
+	 */
+	public static String formatFileSize(int size){
+		String[] suffix = { "B", "KB", "MB", "GB", "TB" };
+		int order = 0;
+		if (size>0){
+			order = (int) (Math.log(size)/Math.log(1024));
+		}
+		double normSize = size / Math.pow(1024, order);
+		return String.format("%.2f %s", normSize, suffix[order]);
 	}
 }
