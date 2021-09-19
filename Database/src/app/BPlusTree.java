@@ -216,7 +216,8 @@ public class BPlusTree {
     }
 
     // TODO for Experiment 5
-    public void removeRecordsWithKey(){
-
+    public ArrayList<Address> removeRecordsWithKey(){
+        // list of address need to be return, so app can use it to delete records from disk
+        return null;
     }
 }

@@ -1,8 +1,5 @@
 package app.entity;
 
-import app.util.Log;
-
-
 
 public class Block {
     int maxRecords;
@@ -10,7 +7,6 @@ public class Block {
     Record[] data;
 
     public Block(int size){
-        // TODO: calculate max records based on blockSize ???
         this.curRecords = 0;
         this.maxRecords = size / Record.size();
         this.data = new Record[maxRecords];
@@ -27,17 +23,19 @@ public class Block {
             if (data[i] == null ){
                 data[i] = record;
                 offset = i;
+                curRecords++;
                 break;
             }
         }
         if (offset == -1){
             throw new Exception("Not enough space for insertion");
         }
-        curRecords++;
         return offset;
     }
 
-    // TODO: delete records
+    public void deleteRecordAt(int offset){
+        data[offset] = null;
+    }
 
     public Record getRecordAt(int offset){
         return data[offset];
