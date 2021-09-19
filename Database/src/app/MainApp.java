@@ -2,7 +2,6 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import app.entity.Address;
 import app.entity.Disk;
 import app.entity.Record;

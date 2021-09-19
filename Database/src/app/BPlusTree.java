@@ -35,7 +35,7 @@ public class BPlusTree {
     }
 
     // to insert a record into the tree
-    public void insert(Node root, int key, Address address) {
+    public void insert(int key, Address address) {
 
         this.insertToLeaf(this.searchLeaf(key), key, address);
     }

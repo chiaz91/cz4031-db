@@ -1,4 +1,5 @@
 package app.entity;
+
 import java.util.ArrayList;
 
 //  n = 4
