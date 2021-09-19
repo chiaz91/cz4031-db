@@ -70,6 +70,7 @@ public class Node {
     // add key
     public int addKey(int key) {
 
+        // System.out.println("inserting key = " + key);
         if (this.getKeys().size() == 0) {
 
             this.keys.add(key);
@@ -77,7 +78,8 @@ public class Node {
         }
 
         int i;
-        for (i = keys.size() -1; i >= 0; i--) {
+        keys.add(key);
+        for (i = keys.size() -2; i >= 0; i--) {
 
             if (keys.get(i) <= key) {
 
@@ -87,9 +89,13 @@ public class Node {
             }
 
             keys.set(i+1, keys.get(i));
-            if (i == 0)
+            if (i == 0) {
+
                 keys.set(i, key);
+                break;
+            }
         }
+        System.out.println("done inserting, index = " + i);
         return i;
     }
 
@@ -97,9 +103,15 @@ public class Node {
     public void deleteKey(int index) {
 
         for (int i = index; i < keys.size() -2; i++) 
-            keys.set(i+1, keys.get(i));
+            keys.add(i+1, keys.get(i));
         
         keys.remove(keys.size()-1);
+    }
+
+    // for deleting keys before splitting
+    public void deleteKeys() {
+
+        keys = new ArrayList<Integer>(4);
     }
 
     // find smallest key (more for use by parentnode but placed here for first level of parents)

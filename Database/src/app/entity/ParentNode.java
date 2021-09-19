@@ -28,10 +28,11 @@ public class ParentNode extends Node {
     // add child
     public int addChild(Node child) {
 
+        System.out.println("adding child");
         if (children.size() == 0) {
 
             children.add(child);
-            this.addKey(child.findSmallestKey());
+            child.setParent(this);
             return 0;
         }
 
@@ -49,13 +50,17 @@ public class ParentNode extends Node {
         else {
 
             index = this.addKey(key);
+
             this.children.add(index +1, child);
         }
 
+        child.setParent(this);
         return index;
     }
+
+    public void splitPrep() {
+
+        deleteKeys();
+        children = new ArrayList<Node>(5);
+    }
 }
-
-
-// SOLVE PARENTS ACTING LIKE LEAF!! Need to change parent to have first child be from previous parent's biggest key (or 0 for first parent) to first of self key
-// child nodes stay the same, but keys need to change to second child onward

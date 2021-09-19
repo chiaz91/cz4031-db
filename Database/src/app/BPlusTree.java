@@ -43,6 +43,7 @@ public class BPlusTree {
     // to search for the right leafnode for record insertion
     public LeafNode searchLeaf(int key) {
 
+        System.out.println("searching for " + key);
         // if root is a leaf, return root
         if (this.root.getIsLeaf())
             return (LeafNode) root;
@@ -57,8 +58,11 @@ public class BPlusTree {
             
             for (int i = keys.size() -1; i >= 0; i--) {
 
-                if (keys.get(i) <= key)
+                if (keys.get(i) <= key) {
+
                     parent = (ParentNode) parent.getChild(i+1);
+                    break;
+                }
 
                 else if (i == 0)
                     parent = (ParentNode) parent.getChild(0);
@@ -79,6 +83,8 @@ public class BPlusTree {
     // to insert record into leafnode
     public void insertToLeaf(LeafNode leaf, int key, Address address) {
         
+        System.out.println("inserting " + key + "   leaf items = " + leaf.getKeys().size());
+
         if (leaf.getKeys().size() < 4) 
             leaf.addRecord(key, address);
 
@@ -91,6 +97,7 @@ public class BPlusTree {
     //to split a full leafnode
     public void splitLeaf(LeafNode old,int key, Address address) {
 
+        System.out.println("splitting leaf");
         int keys[] = new int[5];
         Address addresses[] = new Address[5];
         LeafNode leaf2 = new LeafNode();
@@ -117,6 +124,9 @@ public class BPlusTree {
             addresses[i+1] = addresses[i];
         } 
 
+        //clearing old leafnode values
+        old.splitPrep();
+
         //putting the keys and addresses into the two leafnodes
         for (i = 0; i < 3; i++) 
             old.addRecord(keys[i], addresses[i]);
@@ -131,7 +141,9 @@ public class BPlusTree {
         //setting parents for new leafnode
         if (old.getIsRoot()) {
 
+            System.out.println("changing root (leaf)");
             ParentNode newRoot = new ParentNode();
+            old.setIsRoot(false);
             newRoot.setIsRoot(true);
             newRoot.addChild(old);
             newRoot.addChild(leaf2);
@@ -148,6 +160,7 @@ public class BPlusTree {
     //to split a full parent node
     public void splitParent(ParentNode parent, Node child) {
 
+        System.out.println("splitting parent");
         Node children[] = new Node[6];
         int keys[] = new int[6];
         int key = child.findSmallestKey();
@@ -174,6 +187,9 @@ public class BPlusTree {
             children[i+1] = children[i];
         }
 
+        //clearing old parent values
+        parent.splitPrep();
+
         // putting the children into the two parentnodes
         for (int i = 0; i < 3; i++) 
             parent.addChild(children[i]);
@@ -184,7 +200,9 @@ public class BPlusTree {
         //setting parent for the new parentnode
         if (parent.getIsRoot()) {
 
+            System.out.println("changing root");
             ParentNode newRoot = new ParentNode();
+            parent.setIsRoot(false);
             newRoot.setIsRoot(true);
             newRoot.addChild(parent);
             newRoot.addChild(parent2);
@@ -192,7 +210,7 @@ public class BPlusTree {
         }
 
         else if (parent.getParent().getKeys().size() < 4)
-            parent.getParent().addChild(parent);
+            parent.getParent().addChild(parent2);
 
         else 
             splitParent(parent.getParent(), parent2);

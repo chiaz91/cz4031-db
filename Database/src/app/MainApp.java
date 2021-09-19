@@ -18,7 +18,7 @@ public class MainApp {
 
 	public void run() throws Exception {
 		// read records from data file
-		List<Record> records = Utility.readRecord("data.tsv");
+		List<Record> records = Utility.readRecord("Database/data.tsv");
 		disk = new Disk(DISK_SIZE, BLOCK_SIZE);
 		index = new BPlusTree(BLOCK_SIZE);
 
