@@ -3,13 +3,13 @@ package app.entity;
 // entity to store actual record 
 public class Record {
 	// make it public access first, getter and setter come later 
-	public String key; // assume 10 chars, so it's 10 bytes
+	public String tconst; // assume 10 chars, so it's 10 bytes
 	// TODO: change to float?
 	public float avgRating; // float is 4 bytes, double is 8 bytes
 	public int numVotes; // int is 4 bytes
 	
-	public Record(String key, float avgRating, int numVotes) {
-		this.key = key;
+	public Record(String tconst, float avgRating, int numVotes) {
+		this.tconst = tconst;
 		this.avgRating = avgRating;
 		this.numVotes = numVotes;
 	}
@@ -21,6 +21,6 @@ public class Record {
 
 	@Override
 	public String toString() {
-		return "Record [key=" + key + ", avgRating=" + avgRating + ", numVotes=" + numVotes + "]";
+		return "Record [tconst=" + tconst + ", avgRating=" + avgRating + ", numVotes=" + numVotes + "]";
 	}
 }
