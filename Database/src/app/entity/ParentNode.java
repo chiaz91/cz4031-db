@@ -28,7 +28,6 @@ public class ParentNode extends Node {
     // add child
     public int addChild(Node child) {
 
-        System.out.println("adding child");
         if (children.size() == 0) {
 
             children.add(child);

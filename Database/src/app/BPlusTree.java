@@ -43,7 +43,6 @@ public class BPlusTree {
     // to search for the right leafnode for record insertion
     public LeafNode searchLeaf(int key) {
 
-        System.out.println("searching for " + key);
         // if root is a leaf, return root
         if (this.root.getIsLeaf())
             return (LeafNode) root;
@@ -82,8 +81,6 @@ public class BPlusTree {
 
     // to insert record into leafnode
     public void insertToLeaf(LeafNode leaf, int key, Address address) {
-        
-        System.out.println("inserting " + key + "   leaf items = " + leaf.getKeys().size());
 
         if (leaf.getKeys().size() < 4) 
             leaf.addRecord(key, address);
@@ -97,7 +94,6 @@ public class BPlusTree {
     //to split a full leafnode
     public void splitLeaf(LeafNode old,int key, Address address) {
 
-        System.out.println("splitting leaf");
         int keys[] = new int[5];
         Address addresses[] = new Address[5];
         LeafNode leaf2 = new LeafNode();
@@ -141,7 +137,6 @@ public class BPlusTree {
         //setting parents for new leafnode
         if (old.getIsRoot()) {
 
-            System.out.println("changing root (leaf)");
             ParentNode newRoot = new ParentNode();
             old.setIsRoot(false);
             newRoot.setIsRoot(true);
@@ -160,7 +155,6 @@ public class BPlusTree {
     //to split a full parent node
     public void splitParent(ParentNode parent, Node child) {
 
-        System.out.println("splitting parent");
         Node children[] = new Node[6];
         int keys[] = new int[6];
         int key = child.findSmallestKey();
@@ -173,7 +167,7 @@ public class BPlusTree {
             keys[i] = children[i].findSmallestKey();
         }
         
-        for (int i = 4; i > 0; i--) {
+        for (int i = 4; i >= 0; i--) {
 
             if (keys[i] <= key) {
 
@@ -200,7 +194,6 @@ public class BPlusTree {
         //setting parent for the new parentnode
         if (parent.getIsRoot()) {
 
-            System.out.println("changing root");
             ParentNode newRoot = new ParentNode();
             parent.setIsRoot(false);
             newRoot.setIsRoot(true);

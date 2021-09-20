@@ -70,7 +70,6 @@ public class Node {
     // add key
     public int addKey(int key) {
 
-        // System.out.println("inserting key = " + key);
         if (this.getKeys().size() == 0) {
 
             this.keys.add(key);
@@ -95,7 +94,7 @@ public class Node {
                 break;
             }
         }
-        System.out.println("done inserting, index = " + i);
+        
         return i;
     }
 

@@ -30,7 +30,6 @@ public class LeafNode extends Node {
     // add record
     public int addRecord(int key, Address address) {
 
-        System.out.println("insert record, preinserting key, no. of keys = " + getKeys().size());
         if (this.getRecords().size() == 0) {
 
             this.records.add(address);
@@ -38,11 +37,9 @@ public class LeafNode extends Node {
             return 0;
         }
 
-    //    System.out.println("post if block, no. of keys = " + getKeys().size());
         int index;
         index = super.addKey(key);
 
-        System.out.println("inserting record    no. of records = " + records.size() + "     no. of keys = " + getKeys().size());
         records.add(address);
 
         for (int i = records.size() -2; i >= index; i--) 
@@ -50,7 +47,6 @@ public class LeafNode extends Node {
         
         records.set(index, address);
 
-        System.out.println("done inserting      no. of records = " + records.size());
         return index;
     }
 
