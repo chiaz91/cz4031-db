@@ -2,12 +2,12 @@ package app.entity;
 
 
 public class Record {
-	private String tconst;
-	private float avgRating;
-	private int numVotes;
+	public String tconst;
+	public float avgRating;
+	public int numVotes;
 	
-	public Record(String key, float avgRating, int numVotes) {
-		this.tconst = key;
+	public Record(String tconst, float avgRating, int numVotes) {
+		this.tconst = tconst;
 		this.avgRating = avgRating;
 		this.numVotes = numVotes;
 	}
