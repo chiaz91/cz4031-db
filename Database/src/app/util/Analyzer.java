@@ -37,9 +37,9 @@ public class Analyzer {
     }
 
     public static void log(){
-        Log.i(TAG, String.format("keyLength = %d - %d", minKeyLength, maxKeyLength));
-        Log.i(TAG, String.format("avgRating= %.2f - %.2f", minAvgRating, maxAvgRating));
-        Log.i(TAG, String.format("numVotes= %,d - %,d", minVotes, maxVotes));
+        Log.d(TAG, String.format("keyLength = %d - %d", minKeyLength, maxKeyLength));
+        Log.d(TAG, String.format("avgRating= %.2f - %.2f", minAvgRating, maxAvgRating));
+        Log.d(TAG, String.format("numVotes= %,d - %,d", minVotes, maxVotes));
     }
 
     public static void reset(){

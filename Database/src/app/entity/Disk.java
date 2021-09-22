@@ -47,7 +47,6 @@ public class Disk {
     }
 
 
-
     /**
      * insert the records into first available block for record insertion, however, it can be expensive!!!
      * @param record inserting record
@@ -55,33 +54,9 @@ public class Disk {
      * @throws Exception
      */
     public Address insertRecord(Record record) throws Exception {
-        Block availableBlock = null;
-        int blockId =-1;
-        int offset;
-        // find the first available block
-        for(int i=0; i<blocks.size(); i++){
-            if(blocks.get(i).isAvailable()){
-                availableBlock = getBlockAt(i);
-                blockId = i;
-                break;
-            }
-        }
-        // when no blocks are available, create a new block
-        if (availableBlock == null){
-            if (blocks.size() == maxBlockCount){
-                throw new Exception("Insufficient spaces on disk");
-            }
-            availableBlock = new Block(blockSize);
-            blocks.add(availableBlock);
-            blockId = getLastBlockId();
-        }
-        // insert record into available block
-        offset = availableBlock.insertRecord(record);
-        Log.v(String.format("Record inserted at %d-%d", blockId, offset));
-        recordCounts++;
-        return new Address(blockId, offset);
+        int blockId = getFirstAvailableBlockId();
+        return insertRecordAt(blockId, record);
     }
-
 
     /**
      * Attempt to insert record into last block. if last block is not available, record will be inserted into newly created block.
@@ -91,30 +66,45 @@ public class Disk {
      * @throws Exception
      */
     public Address appendRecord(Record record) throws Exception{
-        int blockId = -1;
-        int offset;
-        Block lastBlock=null;
-        if (blocks.size()>0){
-            blockId = getLastBlockId();
-            lastBlock = getBlockAt(blockId);
+        int blockId = getLastBlockId();
+        return insertRecordAt(blockId, record);
+    }
+
+    private Address insertRecordAt(int blockId, Record record) throws Exception {
+        Block block = null;
+        if (blockId>=0){
+            block = getBlockAt(blockId);
         }
-        // last block is not available/not exist, try to create a new block to insert the record
-        if (lastBlock == null || !lastBlock.isAvailable()) {
+
+        // block is not available/not exist, try to create a new block to insert the record
+        if (block == null || !block.isAvailable()) {
             if (blocks.size() == maxBlockCount) {
                 throw new Exception("Insufficient spaces on disk");
             }
-            lastBlock = new Block(blockSize);
-            blocks.add(lastBlock);
+            block = new Block(blockSize);
+            blocks.add(block);
             blockId = getLastBlockId();
         }
-        offset = lastBlock.insertRecord(record);
+        int offset = block.insertRecord(record);
         recordCounts++;
         Log.v(String.format("Record inserted at %d-%d", blockId, offset));
         return new Address(blockId, offset);
     }
 
-    private int getLastBlockId(){
-        return blocks.size()-1;
+
+    public int getFirstAvailableBlockId(){
+        int blockId = -1;
+        for(int i=0; i<blocks.size(); i++){
+            if(blocks.get(i).isAvailable()){
+                blockId = i;
+                break;
+            }
+        }
+        return blockId;
+    }
+
+    public int getLastBlockId(){
+        return blocks.size()>0? blocks.size()-1:-1;
     }
 
     public Block getBlockAt(int blockId){
@@ -131,8 +121,12 @@ public class Disk {
 
 
 
-    public void deleteRecordAt(int blockId, int offset) {
-        getBlockAt(blockId).deleteRecordAt(offset);
+    public boolean deleteRecordAt(int blockId, int offset) {
+        boolean success = getBlockAt(blockId).deleteRecordAt(offset);
+        if (success) {
+            recordCounts--;
+        }
+        return success;
     }
 
     public void deleteRecords(ArrayList<Address> recordAddresses){
@@ -144,9 +138,9 @@ public class Disk {
 
     // debugs only
     public void log(){
-        Log.i(TAG, String.format("disk size = %s / %s", Utility.formatFileSize(getUsedSize()), Utility.formatFileSize(diskSize) ));
-        Log.i(TAG, String.format("block size = %s", Utility.formatFileSize(blockSize)));
-        Log.i(TAG, String.format("blocks = %,d / %,d", blocks.size(), maxBlockCount));
-        Log.i(TAG, String.format("records = %,d", recordCounts));
+        Log.d(TAG, String.format("disk size = %s / %s", Utility.formatFileSize(getUsedSize()), Utility.formatFileSize(diskSize) ));
+        Log.d(TAG, String.format("block size = %s", Utility.formatFileSize(blockSize)));
+        Log.d(TAG, String.format("blocks = %,d / %,d", blocks.size(), maxBlockCount));
+        Log.d(TAG, String.format("records = %,d", recordCounts));
     }
 }

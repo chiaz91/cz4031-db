@@ -2,6 +2,7 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import app.entity.Address;
 import app.entity.Disk;
@@ -9,19 +10,18 @@ import app.entity.Record;
 import app.util.Log;
 import app.util.Utility;
 
-public class MainApp {
+public class MainApp implements Constants {
 	private static final String TAG = "App";
-	static final int DISK_SIZE  = 100*1000*1000;
-	static final int BLOCK_SIZE  = 100;
+	Scanner scanner = new Scanner(System.in);
 	private Disk disk;
 	private BPlusTree index;
 
 
-	public void run() throws Exception {
+	public void run(int blockSize) throws Exception {
 		// read records from data file
-		List<Record> records = Utility.readRecord("data.tsv");
-		disk = new Disk(DISK_SIZE, BLOCK_SIZE);
-		index = new BPlusTree(BLOCK_SIZE);
+		List<Record> records = Utility.readRecord(DATA_FILE_PATH);
+		disk = new Disk(Constants.DISK_SIZE, blockSize);
+		index = new BPlusTree(blockSize);
 
 		Log.i(TAG,"Before insert into disk");
 		Address recordAddr;
@@ -49,10 +49,121 @@ public class MainApp {
 		Log.i("result="+avgRating);
 	}
 
+	// app menu
+	private String getOptions(String[] options, boolean includeQuit){
+		for (int i = 0; i < options.length; i++) {
+			System.out.println(String.format("[%d] %s",i+1, options[i]));
+		}
+		if (includeQuit){
+			System.out.println("[q] quit");
+		}
+		System.out.print("Enter the option: ");
+		return scanner.nextLine();
+	}
+
+	private void pause(){
+		System.out.print("Press any key to continue");
+		scanner.nextLine();
+	}
+
+	public void displayMainMenu() throws Exception {
+		String[] menu = {
+				"Experience with block size 100B",
+				"Experience with block size 500B",
+				"Show team members",
+//				"Log setting"
+		};
+		String input;
+		do {
+			System.out.println("CZ4031 - Database Assignment 1 (Group X)");
+			input = getOptions(menu, true);
+			switch (input) {
+				case "1" -> {
+					run(BLOCK_SIZE_100);
+					pause();
+				}
+				case "2" -> {
+					run(BLOCK_SIZE_500);
+					pause();
+				}
+				case "3" -> {
+					displayTeamMembers();
+					pause();
+				}
+				case "4" -> displayLogSetting();
+			}
+		} while (!input.equals("q"));
+	}
+
+	// TODO: to be filled up?
+	public void displayTeamMembers(){
+		System.out.println("Team members");
+		System.out.println("[1] <Matric No.> <Name>");
+		System.out.println("[2] <Matric No.> <Name>");
+		System.out.println("[3] <Matric No.> <Name>");
+		System.out.println("[4] <Matric No.> <Name>");
+	}
+
+	public void displayLogSetting(){
+		String[] menu;
+		String input;
+		do {
+			menu = new String[]{
+					String.format("Adjust log level (current: %s)", Log.getLogLevelString()),
+					String.format("include timestamp (current %b)", Log.isTimestampEnabled()),
+					String.format("change timestamp format (current: %s)", Log.getTimestampFormat())
+			};
+			System.out.println("Log Setting");
+			input = getOptions(menu, true);
+			switch (input){
+				case "1" -> adjustLogLevel();
+				case "2" -> adjustLogTimestamp();
+				case "3" -> adjustLogTimestampFormat();
+			}
+		} while (!input.equals("q"));
+
+	}
+
+	private void adjustLogLevel(){
+		String[] menu = {
+				"None", "Error", "Warn", "Info", "Debug", "Verbose"
+		};
+		String input = getOptions(menu, false);
+		switch (input){
+			case "1" -> Log.setLevel(Log.LEVEL_NONE);
+			case "2" -> Log.setLevel(Log.LEVEL_ERROR);
+			case "3" -> Log.setLevel(Log.LEVEL_WARN);
+			case "4" -> Log.setLevel(Log.LEVEL_INFO);
+			case "5" -> Log.setLevel(Log.LEVEL_DEBUG);
+			case "6" -> Log.setLevel(Log.LEVEL_VERBOSE);
+		}
+	}
+	private void adjustLogTimestamp(){
+		String[] menu = {"Enable", "Disable"};
+		String input = getOptions(menu, false);
+		switch (input){
+			case "1" -> Log.setTimestampEnabled(true);
+			case "2" -> Log.setTimestampEnabled(false);
+		}
+	}
+	private void adjustLogTimestampFormat(){
+		String[] menu = {"Detail", "Simple"};
+		String input = getOptions(menu, false);
+		switch (input){
+			case "1" -> Log.setTimestampFormat(Log.FORMAT_DETAIL);
+			case "2" -> Log.setTimestampFormat(Log.FORMAT_SIMPLE);
+		}
+	}
+
+
+
+
+
 	public static void main(String[] args) {
 		try {
 			Log.setLevel(Log.LEVEL_DEBUG);
-			new MainApp().run();
+			MainApp app = new MainApp();
+			app.displayMainMenu();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

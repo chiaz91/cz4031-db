@@ -17,6 +17,10 @@ public class Block {
     }
 
     public int insertRecord(Record record) throws Exception {
+        if (!isAvailable()){
+            throw new Exception("Not enough space for insertion");
+        }
+
         int offset = -1;
         // find first empty space, insert record
         for (int i = 0; i < data.length ; i++) {
@@ -27,14 +31,17 @@ public class Block {
                 break;
             }
         }
-        if (offset == -1){
-            throw new Exception("Not enough space for insertion");
-        }
         return offset;
     }
 
-    public void deleteRecordAt(int offset){
-        data[offset] = null;
+    public boolean deleteRecordAt(int offset){
+        boolean success = false;
+        if (data[offset]!=null){
+            data[offset] = null;
+            curRecords--;
+            success = true;
+        }
+        return success;
     }
 
     public Record getRecordAt(int offset){
