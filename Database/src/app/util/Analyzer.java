@@ -1,6 +1,6 @@
 package app.util;
 
-import app.entity.Record;
+import app.storage.Record;
 
 public class Analyzer {
     private static final String TAG = "Analyzer";

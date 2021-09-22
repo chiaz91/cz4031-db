@@ -1,11 +1,8 @@
-package app;
+package app.index;
 
-import app.entity.Address;
+import app.storage.Address;
 import app.util.Log;
 import java.util.ArrayList;
-import app.entity.LeafNode;
-import app.entity.ParentNode;
-import app.entity.Node;
 
 public class BPlusTree {
     private static final String TAG = "B+Tree";

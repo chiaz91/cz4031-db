@@ -1,4 +1,4 @@
-package app.entity;
+package app.storage;
 
 public class Address {
     int blockId;

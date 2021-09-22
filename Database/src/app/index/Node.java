@@ -1,4 +1,4 @@
-package app.entity;
+package app.index;
 
 import java.util.ArrayList;
 

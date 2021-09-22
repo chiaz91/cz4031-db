@@ -1,4 +1,4 @@
-package app.entity;
+package app.storage;
 
 import app.util.Log;
 import app.util.Utility;

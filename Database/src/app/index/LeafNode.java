@@ -1,4 +1,6 @@
-package app.entity;
+package app.index;
+
+import app.storage.Address;
 
 import java.util.ArrayList;
 

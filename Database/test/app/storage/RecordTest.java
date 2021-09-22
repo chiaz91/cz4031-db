@@ -1,4 +1,4 @@
-package app.entity;
+package app.storage;
 
 import org.junit.jupiter.api.Test;
 
