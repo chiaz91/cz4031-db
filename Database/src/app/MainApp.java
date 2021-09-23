@@ -23,7 +23,7 @@ public class MainApp implements Constants {
 //		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
 
 		//TODO: generate sorted records (REMOVE LATER!!!!))
-		List<Record> records = Utility.generateRecords(55,5);
+		List<Record> records = Utility.generateRecords(55,6);
 
 		disk = new Disk(Constants.DISK_SIZE, blockSize);
 		index = new BPlusTree(blockSize);
@@ -48,7 +48,7 @@ public class MainApp implements Constants {
 
 	private void testSearch(){
 		Log.d(TAG, "Test Searching Index!!");
-		ArrayList<Address> addresses = index.getRecordsWithKey(2);
+		ArrayList<Address> addresses = index.getRecordsWithKey(8);
 		ArrayList<Record> records = disk.getRecords(addresses);
 		if (addresses.size() != records.size()){
 			Log.wtf(TAG, "ERROR!!!! Something Wrong");

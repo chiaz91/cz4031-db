@@ -223,30 +223,58 @@ public class BPlusTree {
         while (!curNode.getIsLeaf()){
             parentNode = (ParentNode) curNode;
             for (int i=0; i<parentNode.getKeys().size(); i++) {
-                if (i == 0 && key < parentNode.getKey(i)){
-                    curNode = parentNode.getChild(0);
+                if ( key <= parentNode.getKey(i)){
+                    Log.d("getRecordsWithKey",String.format("[%d] key(%d) <= curKey(%d)", i, key, parentNode.getKey(i) ));
+                    curNode = parentNode.getChild(i);
+                    blockAccess++;
                     break;
                 }
-                if (key == parentNode.getKey(i)){
+                if (i >= parentNode.getKeys().size()-1){
+                    Log.d("getRecordsWithKey",String.format("[%d is last key]  key(%d) >= curKey(%d)", i, key, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i+1);
+                    blockAccess++;
                     break;
                 }
             }
         }
         // after leaf node is found, find all records with same key
+        if (curNode == null){
+            Log.wtf("getRecordsWithKey","ERROR!!! Unable to find key!?");
+            return result;
+        }
         if (!curNode.getIsLeaf()){
-            Log.wtf("ERROR!!! This should not be happen");
+            Log.wtf("getRecordsWithKey","ERROR!!! This should not be happen");
         }
         LeafNode curLeaf = (LeafNode) curNode;
-        for (int i=0; i<curLeaf.getKeys().size(); i++){
-            if (curNode.getKey(i) == key){
-                result.add(curLeaf.getRecord(i));
+        boolean done = false;
+        while(!done && curLeaf!=null){
+            // finding same keys within leaf node
+            for (int i=0; i<curLeaf.getKeys().size(); i++){
+                // found same key, add into result list
+                if (curLeaf.getKey(i) == key){
+                    result.add(curLeaf.getRecord(i));
+                    continue;
+                }
+                // if curKey > searching key, no need to continue searching
+                if (curLeaf.getKey(i) > key){
+                    done = true;
+                    break;
+                }
+            }
+            if (!done){
+                // trying to check sibling node has remaining records of same key
+                if (curLeaf.getNext()!= null){
+                    curLeaf = (LeafNode) curLeaf.getNext();
+                    Log.d("Proceed to sibling node");
+                    blockAccess++;
+                } else {
+                    break;
+                }
             }
         }
-        // TODO: check if leaf node is full, and last key == key, proceed to sibling node (undone)
-        // TODO: count number of block accessed! (undone)
 
-        Log.d(TAG, "getRecordsWithKey.size = "+result.size());
+        Log.d("getRecordsWithKey", "result.size = "+result.size());
+        Log.d("getRecordsWithKey", "blockAccess = "+blockAccess);
 
         return result;
     }
