@@ -20,13 +20,13 @@ public class BPlusTree {
         leafMinKeys = (int) Math.floor((maxKeys+1)/2);
         Log.i(TAG, "init: blockSize = "+blockSize+", maxKeys = "+maxKeys);
         Log.i(TAG, "MinKeys: parent="+parentMinKeys+", leaf="+leafMinKeys);
-        root = createFirst();
+        root = createFirst(maxKeys);
     }
 
     // to create first node
-    public LeafNode createFirst() {
+    public LeafNode createFirst(int max) {
 
-        LeafNode newRoot = new LeafNode();
+        LeafNode newRoot = new LeafNode(max);
         newRoot.setIsRoot(true);
         return newRoot;
     }
@@ -79,7 +79,7 @@ public class BPlusTree {
     // to insert record into leafnode
     public void insertToLeaf(LeafNode leaf, int key, Address address) {
 
-        if (leaf.getKeys().size() < 4) 
+        if (leaf.getKeys().size() < maxKeys) 
             leaf.addRecord(key, address);
 
         else {
@@ -91,19 +91,19 @@ public class BPlusTree {
     //to split a full leafnode
     public void splitLeaf(LeafNode old,int key, Address address) {
 
-        int keys[] = new int[5];
-        Address addresses[] = new Address[5];
-        LeafNode leaf2 = new LeafNode();
+        int keys[] = new int[maxKeys+1];
+        Address addresses[] = new Address[maxKeys+1];
+        LeafNode leaf2 = new LeafNode(maxKeys);
         int i;
 
         //getting full and sorted lists of keys and addresses
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < maxKeys; i++) {
 
             keys[i] = old.getKey(i);
             addresses[i] = old.getRecord(i);
         }
 
-        for (i = 3; i >= 0; i--) {
+        for (i = maxKeys-1; i >= 0; i--) {
             
             if (keys[i] <= key) {
 
@@ -121,10 +121,10 @@ public class BPlusTree {
         old.splitPrep();
 
         //putting the keys and addresses into the two leafnodes
-        for (i = 0; i < 3; i++) 
+        for (i = 0; i < leafMinKeys-1; i++) 
             old.addRecord(keys[i], addresses[i]);
 
-        for (i = 3; i < 5; i++) 
+        for (i = leafMinKeys-1; i < maxKeys+1; i++) 
             leaf2.addRecord(keys[i], addresses[i]);
 
         //setting old leafnode to point to new leafnode and new leafnode to point to next leafnode
@@ -134,7 +134,7 @@ public class BPlusTree {
         //setting parents for new leafnode
         if (old.getIsRoot()) {
 
-            ParentNode newRoot = new ParentNode();
+            ParentNode newRoot = new ParentNode(maxKeys);
             old.setIsRoot(false);
             newRoot.setIsRoot(true);
             newRoot.addChild(old);
@@ -142,7 +142,7 @@ public class BPlusTree {
             root = newRoot;
         }
 
-        else if (old.getParent().getKeys().size() < 4)
+        else if (old.getParent().getKeys().size() < maxKeys)
             old.getParent().addChild(leaf2);
 
         else 
@@ -152,19 +152,19 @@ public class BPlusTree {
     //to split a full parent node
     public void splitParent(ParentNode parent, Node child) {
 
-        Node children[] = new Node[6];
-        int keys[] = new int[6];
+        Node children[] = new Node[maxKeys+2];
+        int keys[] = new int[maxKeys+2];
         int key = child.findSmallestKey();
-        ParentNode parent2 = new ParentNode();
+        ParentNode parent2 = new ParentNode(maxKeys);
 
         // getting full and sorted lists of keys and children
-        for (int i = 0; i < 5; i++)  {
+        for (int i = 0; i < maxKeys+1; i++)  {
 
             children[i] = parent.getChild(i);
             keys[i] = children[i].findSmallestKey();
         }
         
-        for (int i = 4; i >= 0; i--) {
+        for (int i = maxKeys; i >= 0; i--) {
 
             if (keys[i] <= key) {
 
@@ -182,16 +182,16 @@ public class BPlusTree {
         parent.splitPrep();
 
         // putting the children into the two parentnodes
-        for (int i = 0; i < 3; i++) 
+        for (int i = 0; i < parentMinKeys-1; i++) 
             parent.addChild(children[i]);
 
-        for (int i = 3; i < 6; i++) 
+        for (int i = parentMinKeys-1; i < maxKeys+2; i++) 
             parent2.addChild(children[i]);
 
         //setting parent for the new parentnode
         if (parent.getIsRoot()) {
 
-            ParentNode newRoot = new ParentNode();
+            ParentNode newRoot = new ParentNode(maxKeys);
             parent.setIsRoot(false);
             newRoot.setIsRoot(true);
             newRoot.addChild(parent);
@@ -199,7 +199,7 @@ public class BPlusTree {
             root = newRoot;
         }
 
-        else if (parent.getParent().getKeys().size() < 4)
+        else if (parent.getParent().getKeys().size() < maxKeys)
             parent.getParent().addChild(parent2);
 
         else 

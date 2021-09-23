@@ -9,11 +9,13 @@ public class Node {
     private ParentNode parent;
     private boolean isLeaf;
     private boolean isRoot;
+    private int size;
 
     // constructor
-    public Node() {
+    public Node(int max) {
 
-        keys = new ArrayList<Integer>(4);
+        size = max;
+        keys = new ArrayList<Integer>();
         isLeaf = false;
         isRoot = false;
     }
@@ -52,6 +54,12 @@ public class Node {
     public void setParent(ParentNode progenitor) {
 
         parent = progenitor;
+    }
+
+    // get size of node
+    public int getSize() {
+
+        return size;
     }
 
     // get arraylist of all keys
@@ -110,7 +118,7 @@ public class Node {
     // for deleting keys before splitting
     public void deleteKeys() {
 
-        keys = new ArrayList<Integer>(4);
+        keys = new ArrayList<Integer>();
     }
 
     // find smallest key (more for use by parentnode but placed here for first level of parents)

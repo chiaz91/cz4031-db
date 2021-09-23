@@ -7,10 +7,10 @@ public class ParentNode extends Node {
     private ArrayList<Node> children;
 
     // constructor
-    public ParentNode() {
+    public ParentNode(int max) {
 
-        super();
-        children = new ArrayList<Node>(5);
+        super(max);
+        children = new ArrayList<Node>();
     }
 
     // get arraylist of all children
@@ -60,6 +60,6 @@ public class ParentNode extends Node {
     public void splitPrep() {
 
         deleteKeys();
-        children = new ArrayList<Node>(5);
+        children = new ArrayList<Node>();
     }
 }
