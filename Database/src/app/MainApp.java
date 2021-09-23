@@ -20,7 +20,11 @@ public class MainApp implements Constants {
 
 	public void run(int blockSize) throws Exception {
 		// read records from data file
-		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
+//		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
+
+		//TODO: generate sorted records (REMOVE LATER!!!!))
+		List<Record> records = Utility.generateRecords(50);
+
 		disk = new Disk(Constants.DISK_SIZE, blockSize);
 		index = new BPlusTree(blockSize);
 

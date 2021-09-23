@@ -79,6 +79,16 @@ public class Utility {
 	}
 
 
+	public static List<Record> generateRecords(int num){
+		ArrayList<Record> records = new ArrayList<>();
+		for (int i = 0; i < num; i++) {
+			String tconst = String.format("tt%08d", i+1);
+			records.add( new Record(tconst, 0f, i+1));
+		}
+		return records;
+	}
+
+
 	// for DEBUG
 //	public static void logDirs(){
 //		String path1 = System.getProperty("user.dir");
