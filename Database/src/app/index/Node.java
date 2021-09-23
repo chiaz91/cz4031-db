@@ -9,12 +9,11 @@ public class Node {
     private ParentNode parent;
     private boolean isLeaf;
     private boolean isRoot;
-    private int size;
+
 
     // constructor
-    public Node(int max) {
+    public Node() {
 
-        size = max;
         keys = new ArrayList<Integer>();
         isLeaf = false;
         isRoot = false;
@@ -54,12 +53,6 @@ public class Node {
     public void setParent(ParentNode progenitor) {
 
         parent = progenitor;
-    }
-
-    // get size of node
-    public int getSize() {
-
-        return size;
     }
 
     // get arraylist of all keys

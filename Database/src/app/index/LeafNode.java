@@ -10,9 +10,9 @@ public class LeafNode extends Node {
     private Node next;
 
     // constructor
-    public LeafNode(int max) {
+    public LeafNode() {
 
-        super(max);
+        super();
         records = new ArrayList<Address>();
         setIsLeaf(true);
     }
