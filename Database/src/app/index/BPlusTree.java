@@ -121,10 +121,10 @@ public class BPlusTree {
         old.splitPrep();
 
         //putting the keys and addresses into the two leafnodes
-        for (i = 0; i < leafMinKeys-1; i++) 
+        for (i = 0; i < leafMinKeys; i++) 
             old.addRecord(keys[i], addresses[i]);
 
-        for (i = leafMinKeys-1; i < maxKeys+1; i++) 
+        for (i = leafMinKeys; i < maxKeys+1; i++) 
             leaf2.addRecord(keys[i], addresses[i]);
 
         //setting old leafnode to point to new leafnode and new leafnode to point to next leafnode
@@ -158,13 +158,13 @@ public class BPlusTree {
         ParentNode parent2 = new ParentNode(maxKeys);
 
         // getting full and sorted lists of keys and children
-        for (int i = 0; i < maxKeys+1; i++)  {
+        for (int i = 0; i < maxKeys+2; i++)  {
 
             children[i] = parent.getChild(i);
             keys[i] = children[i].findSmallestKey();
         }
         
-        for (int i = maxKeys; i >= 0; i--) {
+        for (int i = maxKeys+1; i >= 0; i--) {
 
             if (keys[i] <= key) {
 
