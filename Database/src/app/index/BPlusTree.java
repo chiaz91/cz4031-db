@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class BPlusTree {
     private static final String TAG = "B+Tree";
-    private static final int SIZE_POINTER = 6; // for 64 bits system
+    private static final int SIZE_POINTER = 6; // for 64 bits system; RAM use 64bit for addressing -> 2^6 = 6B
     private static final int SIZE_KEY = 4; // for int value
     int maxKeys;
     int parentMinKeys;
@@ -15,7 +15,8 @@ public class BPlusTree {
 
     public BPlusTree(int blockSize){
         // TODO: calculate n (max number of keys)?
-        maxKeys = (blockSize-SIZE_POINTER) / (SIZE_KEY+SIZE_POINTER);
+        // n keys + n+1 pointer
+        maxKeys = (blockSize-SIZE_POINTER) / (SIZE_KEY+SIZE_POINTER); // n
         parentMinKeys = (int) Math.floor(maxKeys/2);
         leafMinKeys = (int) Math.floor((maxKeys+1)/2);
         Log.i(TAG, "init: blockSize = "+blockSize+", maxKeys = "+maxKeys);
@@ -208,7 +209,7 @@ public class BPlusTree {
 
 
 
-    // TODO for Experiment 2
+    // TODO for Experiment 2 (partially done)
 
 
     // TODO for Experiment 3
@@ -227,5 +228,27 @@ public class BPlusTree {
     public ArrayList<Address> removeRecordsWithKey(){
         // list of address need to be return, so app can use it to delete records from disk
         return null;
+    }
+
+
+    public void logStructure(){
+        logStructure(0, root);
+    }
+
+    // recursive logging of tree structure
+    private void logStructure(int level, Node curNode){
+        if (curNode == null){
+            curNode = root;
+        }
+
+        System.out.print("h="+level+"; ");
+        curNode.logStructure();
+        if (curNode.getIsLeaf()){
+            return;
+        }
+        ParentNode parentNode = (ParentNode) curNode;
+        for (Node child: parentNode.getChildren()) {
+            logStructure(level+1, child);
+        }
     }
 }

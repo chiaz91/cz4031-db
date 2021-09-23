@@ -5,4 +5,5 @@ public interface Constants {
     int BLOCK_SIZE_100 = 100;
     int BLOCK_SIZE_500 = 500;
     String DATA_FILE_PATH = "data.tsv";
+    String DATA_TEST_FILE_PATH = "data_test.tsv";
 }

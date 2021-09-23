@@ -20,7 +20,7 @@ public class MainApp implements Constants {
 
 	public void run(int blockSize) throws Exception {
 		// read records from data file
-		List<Record> records = Utility.readRecord(DATA_FILE_PATH);
+		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
 		disk = new Disk(Constants.DISK_SIZE, blockSize);
 		index = new BPlusTree(blockSize);
 
@@ -33,6 +33,7 @@ public class MainApp implements Constants {
 		}
 		Log.i(TAG,"After insert into disk");
 		disk.log();
+		index.logStructure();
 
 		// TODO do experiences
 //		doExperience1();
@@ -164,7 +165,8 @@ public class MainApp implements Constants {
 		try {
 			Log.setLevel(Log.LEVEL_DEBUG);
 			MainApp app = new MainApp();
-			app.displayMainMenu();
+//			app.displayMainMenu();
+			app.run(BLOCK_SIZE_100);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
