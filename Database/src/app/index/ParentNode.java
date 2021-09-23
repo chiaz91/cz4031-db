@@ -10,9 +10,9 @@ public class ParentNode extends Node {
     private ArrayList<Node> children;
 
     // constructor
-    public ParentNode(int max) {
+    public ParentNode() {
 
-        super(max);
+        super();
         children = new ArrayList<Node>();
     }
 

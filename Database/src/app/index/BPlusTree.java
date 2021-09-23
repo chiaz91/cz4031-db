@@ -21,13 +21,13 @@ public class BPlusTree {
         leafMinKeys = (int) Math.floor((maxKeys+1)/2);
         Log.i(TAG, "init: blockSize = "+blockSize+", maxKeys = "+maxKeys);
         Log.i(TAG, "MinKeys: parent="+parentMinKeys+", leaf="+leafMinKeys);
-        root = createFirst(maxKeys);
+        root = createFirst();
     }
 
     // to create first node
-    public LeafNode createFirst(int max) {
+    public LeafNode createFirst() {
 
-        LeafNode newRoot = new LeafNode(max);
+        LeafNode newRoot = new LeafNode();
         newRoot.setIsRoot(true);
         return newRoot;
     }
@@ -94,7 +94,7 @@ public class BPlusTree {
 
         int keys[] = new int[maxKeys+1];
         Address addresses[] = new Address[maxKeys+1];
-        LeafNode leaf2 = new LeafNode(maxKeys);
+        LeafNode leaf2 = new LeafNode();
         int i;
 
         //getting full and sorted lists of keys and addresses
@@ -122,10 +122,10 @@ public class BPlusTree {
         old.splitPrep();
 
         //putting the keys and addresses into the two leafnodes
-        for (i = 0; i < leafMinKeys-1; i++) 
+        for (i = 0; i < leafMinKeys; i++) 
             old.addRecord(keys[i], addresses[i]);
 
-        for (i = leafMinKeys-1; i < maxKeys+1; i++) 
+        for (i = leafMinKeys; i < maxKeys+1; i++) 
             leaf2.addRecord(keys[i], addresses[i]);
 
         //setting old leafnode to point to new leafnode and new leafnode to point to next leafnode
@@ -135,7 +135,7 @@ public class BPlusTree {
         //setting parents for new leafnode
         if (old.getIsRoot()) {
 
-            ParentNode newRoot = new ParentNode(maxKeys);
+            ParentNode newRoot = new ParentNode();
             old.setIsRoot(false);
             newRoot.setIsRoot(true);
             newRoot.addChild(old);
@@ -156,7 +156,7 @@ public class BPlusTree {
         Node children[] = new Node[maxKeys+2];
         int keys[] = new int[maxKeys+2];
         int key = child.findSmallestKey();
-        ParentNode parent2 = new ParentNode(maxKeys);
+        ParentNode parent2 = new ParentNode();
 
         // getting full and sorted lists of keys and children
         for (int i = 0; i < maxKeys+1; i++)  {
@@ -192,7 +192,7 @@ public class BPlusTree {
         //setting parent for the new parentnode
         if (parent.getIsRoot()) {
 
-            ParentNode newRoot = new ParentNode(maxKeys);
+            ParentNode newRoot = new ParentNode();
             parent.setIsRoot(false);
             newRoot.setIsRoot(true);
             newRoot.addChild(parent);
