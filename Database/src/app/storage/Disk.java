@@ -119,6 +119,14 @@ public class Disk {
         return getRecordAt(address.getBlockId(), address.getOffset());
     }
 
+    public ArrayList<Record> getRecords(ArrayList<Address> addresses ){
+        ArrayList<Record> records = new ArrayList<>();
+        for (Address address: addresses) {
+            records.add(getRecordAt(address));
+        }
+        return records;
+    }
+
 
 
     public boolean deleteRecordAt(int blockId, int offset) {

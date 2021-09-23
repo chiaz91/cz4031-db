@@ -23,7 +23,7 @@ public class MainApp implements Constants {
 //		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
 
 		//TODO: generate sorted records (REMOVE LATER!!!!))
-		List<Record> records = Utility.generateRecords(50);
+		List<Record> records = Utility.generateRecords(55,5);
 
 		disk = new Disk(Constants.DISK_SIZE, blockSize);
 		index = new BPlusTree(blockSize);
@@ -39,8 +39,23 @@ public class MainApp implements Constants {
 		disk.log();
 		index.logStructure();
 
+		testSearch();
+
+
 		// TODO do experiences
 //		doExperience1();
+	}
+
+	private void testSearch(){
+		Log.d(TAG, "Test Searching Index!!");
+		ArrayList<Address> addresses = index.getRecordsWithKey(2);
+		ArrayList<Record> records = disk.getRecords(addresses);
+		if (addresses.size() != records.size()){
+			Log.wtf(TAG, "ERROR!!!! Something Wrong");
+		}
+		for (int i=0; i<addresses.size(); i++) {
+			Log.d(TAG, addresses.get(i).toString() + " -> "+records.get(i).toString());
+		}
 	}
 
 	public void doExperience1(){
@@ -168,6 +183,7 @@ public class MainApp implements Constants {
 	public static void main(String[] args) {
 		try {
 			Log.setLevel(Log.LEVEL_DEBUG);
+			Log.setTimestampEnabled(false);
 			MainApp app = new MainApp();
 //			app.displayMainMenu();
 			app.run(BLOCK_SIZE_100);

@@ -215,7 +215,40 @@ public class BPlusTree {
     // TODO for Experiment 3
     public ArrayList<Address> getRecordsWithKey(int key){
         // TODO: traverse through the tree, loop the leaf nodes with same key
-        return null;
+        ArrayList<Address> result = new ArrayList<>();
+        int blockAccess = 1; // access the root??
+        Node curNode = root;
+        ParentNode parentNode;
+        // searching for leaf node with key
+        while (!curNode.getIsLeaf()){
+            parentNode = (ParentNode) curNode;
+            for (int i=0; i<parentNode.getKeys().size(); i++) {
+                if (i == 0 && key < parentNode.getKey(i)){
+                    curNode = parentNode.getChild(0);
+                    break;
+                }
+                if (key == parentNode.getKey(i)){
+                    curNode = parentNode.getChild(i+1);
+                    break;
+                }
+            }
+        }
+        // after leaf node is found, find all records with same key
+        if (!curNode.getIsLeaf()){
+            Log.wtf("ERROR!!! This should not be happen");
+        }
+        LeafNode curLeaf = (LeafNode) curNode;
+        for (int i=0; i<curLeaf.getKeys().size(); i++){
+            if (curNode.getKey(i) == key){
+                result.add(curLeaf.getRecord(i));
+            }
+        }
+        // TODO: check if leaf node is full, and last key == key, proceed to sibling node (undone)
+        // TODO: count number of block accessed! (undone)
+
+        Log.d(TAG, "getRecordsWithKey.size = "+result.size());
+
+        return result;
     }
 
     // TODO for Experiment 4
