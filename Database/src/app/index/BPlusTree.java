@@ -182,10 +182,10 @@ public class BPlusTree {
         parent.splitPrep();
 
         // putting the children into the two parentnodes
-        for (int i = 0; i < parentMinKeys-1; i++) 
+        for (int i = 0; i < parentMinKeys+2; i++) 
             parent.addChild(children[i]);
 
-        for (int i = parentMinKeys-1; i < maxKeys+2; i++) 
+        for (int i = parentMinKeys+2; i < maxKeys+2; i++) 
             parent2.addChild(children[i]);
 
         //setting parent for the new parentnode
