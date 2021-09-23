@@ -1,8 +1,11 @@
 package app.index;
 
+import app.util.Log;
+
 import java.util.ArrayList;
 
 public class ParentNode extends Node {
+    private static final String TAG = "Node.P";
 
     private ArrayList<Node> children;
 
@@ -62,4 +65,25 @@ public class ParentNode extends Node {
         deleteKeys();
         children = new ArrayList<Node>();
     }
+
+
+
+    @Override
+    void logStructure() {
+        Log.d(TAG, this.toString());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i=0; i<getKeys().size(); i++){
+            if (i>0){
+                sb.append(", ");
+            }
+            sb.append(String.format("%d:{%d}", i, getKey(i) ));
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

@@ -168,7 +168,7 @@ class DiskTest {
         assertEquals(BLOCK_SIZE*2, disk.getUsedSize());
 
         // do append, check address
-        Address address = disk.appendRecord(records.get(3));
+        Address address = disk.appendRecord(records.get(records.size()-1));
         assertEquals(10, disk.recordCounts);
         assertEquals(3, disk.getBlocksCount());
         assertEquals(2, address.blockId);

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class BPlusTree {
     private static final String TAG = "B+Tree";
-    private static final int SIZE_POINTER = 6; // for 64 bits system
+    private static final int SIZE_POINTER = 6; // for 64 bits system; RAM use 64bit for addressing -> 2^6 = 6B
     private static final int SIZE_KEY = 4; // for int value
     int maxKeys;
     int parentMinKeys;
@@ -15,7 +15,8 @@ public class BPlusTree {
 
     public BPlusTree(int blockSize){
         // TODO: calculate n (max number of keys)?
-        maxKeys = (blockSize-SIZE_POINTER) / (SIZE_KEY+SIZE_POINTER);
+        // n keys + n+1 pointer
+        maxKeys = (blockSize-SIZE_POINTER) / (SIZE_KEY+SIZE_POINTER); // n
         parentMinKeys = (int) Math.floor(maxKeys/2);
         leafMinKeys = (int) Math.floor((maxKeys+1)/2);
         Log.i(TAG, "init: blockSize = "+blockSize+", maxKeys = "+maxKeys);
@@ -208,13 +209,74 @@ public class BPlusTree {
 
 
 
-    // TODO for Experiment 2
+    // TODO for Experiment 2 (partially done)
 
 
     // TODO for Experiment 3
     public ArrayList<Address> getRecordsWithKey(int key){
         // TODO: traverse through the tree, loop the leaf nodes with same key
-        return null;
+        ArrayList<Address> result = new ArrayList<>();
+        int blockAccess = 1; // access the root??
+        Node curNode = root;
+        ParentNode parentNode;
+        // searching for leaf node with key
+        while (!curNode.getIsLeaf()){
+            parentNode = (ParentNode) curNode;
+            for (int i=0; i<parentNode.getKeys().size(); i++) {
+                if ( key <= parentNode.getKey(i)){
+                    Log.d("getRecordsWithKey",String.format("[%d] key(%d) <= curKey(%d)", i, key, parentNode.getKey(i) ));
+                    curNode = parentNode.getChild(i);
+                    blockAccess++;
+                    break;
+                }
+                if (i >= parentNode.getKeys().size()-1){
+                    Log.d("getRecordsWithKey",String.format("[%d is last key]  key(%d) >= curKey(%d)", i, key, parentNode.getKey(i) ));
+                    curNode = parentNode.getChild(i+1);
+                    blockAccess++;
+                    break;
+                }
+            }
+        }
+        // after leaf node is found, find all records with same key
+        if (curNode == null){
+            Log.wtf("getRecordsWithKey","ERROR!!! Unable to find key!?");
+            return result;
+        }
+        if (!curNode.getIsLeaf()){
+            Log.wtf("getRecordsWithKey","ERROR!!! This should not be happen");
+        }
+        LeafNode curLeaf = (LeafNode) curNode;
+        boolean done = false;
+        while(!done && curLeaf!=null){
+            // finding same keys within leaf node
+            for (int i=0; i<curLeaf.getKeys().size(); i++){
+                // found same key, add into result list
+                if (curLeaf.getKey(i) == key){
+                    result.add(curLeaf.getRecord(i));
+                    continue;
+                }
+                // if curKey > searching key, no need to continue searching
+                if (curLeaf.getKey(i) > key){
+                    done = true;
+                    break;
+                }
+            }
+            if (!done){
+                // trying to check sibling node has remaining records of same key
+                if (curLeaf.getNext()!= null){
+                    curLeaf = (LeafNode) curLeaf.getNext();
+                    Log.d("Proceed to sibling node");
+                    blockAccess++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        Log.d("getRecordsWithKey", "result.size = "+result.size());
+        Log.d("getRecordsWithKey", "blockAccess = "+blockAccess);
+
+        return result;
     }
 
     // TODO for Experiment 4
@@ -227,5 +289,27 @@ public class BPlusTree {
     public ArrayList<Address> removeRecordsWithKey(){
         // list of address need to be return, so app can use it to delete records from disk
         return null;
+    }
+
+
+    public void logStructure(){
+        logStructure(0, root);
+    }
+
+    // recursive logging of tree structure
+    private void logStructure(int level, Node curNode){
+        if (curNode == null){
+            curNode = root;
+        }
+
+        System.out.print("h="+level+"; ");
+        curNode.logStructure();
+        if (curNode.getIsLeaf()){
+            return;
+        }
+        ParentNode parentNode = (ParentNode) curNode;
+        for (Node child: parentNode.getChildren()) {
+            logStructure(level+1, child);
+        }
     }
 }

@@ -3,7 +3,7 @@ package app.index;
 import java.util.ArrayList;
 
 //  n = 4
-public class Node {
+public abstract class Node {
     
     private ArrayList<Integer> keys;
     private ParentNode parent;
@@ -135,4 +135,6 @@ public class Node {
 
         return key;
     }
+
+    abstract void logStructure();
 }

@@ -1,10 +1,12 @@
 package app.index;
 
 import app.storage.Address;
+import app.util.Log;
 
 import java.util.ArrayList;
 
 public class LeafNode extends Node {
+    private static final String TAG = "Node.L";
 
     private ArrayList<Address> records;
     private Node next;
@@ -68,5 +70,24 @@ public class LeafNode extends Node {
 
         deleteKeys();
         records = new ArrayList<Address>();
+    }
+
+
+    @Override
+    void logStructure() {
+        Log.d(TAG, this.toString());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i=0; i<getKeys().size(); i++){
+            if (i>0){
+                sb.append(", ");
+            }
+             sb.append(String.format("%d:{%d=>%s}", i, getKey(i), getRecord(i)));
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

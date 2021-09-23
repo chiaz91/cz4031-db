@@ -9,11 +9,12 @@ import java.util.Date;
 public class Log {
 	private static final String TAG = "Log";
 	public static final int LEVEL_NONE  = 0;
-	public static final int LEVEL_ERROR = 1; // error or exception, please quickly fix it
-	public static final int LEVEL_WARN  = 2; // might lead to error, but works fine now.
-	public static final int LEVEL_INFO  = 3; // important process flow, good to show in log
-	public static final int LEVEL_DEBUG = 4; // messages for debugging purpose
-	public static final int LEVEL_VERBOSE = 5; // detail and redundant step by step messages
+	public static final int LEVEL_ASSERTION = 1; // log that should never be printed!!!!
+	public static final int LEVEL_ERROR = 2; // error or exception, please quickly fix it
+	public static final int LEVEL_WARN  = 3; // might lead to error, but works fine now.
+	public static final int LEVEL_INFO  = 4; // important process flow, good to show in log
+	public static final int LEVEL_DEBUG = 5; // messages for debugging purpose
+	public static final int LEVEL_VERBOSE = 6; // detail and redundant step by step messages
 	public static final int LEVEL_ALL = 10;
 	public static final String FORMAT_DETAIL = "yyyy-MM-dd HH:mm:ss.SSS";
 	public static final String FORMAT_SIMPLE = "HH:mm:ss";
@@ -64,6 +65,9 @@ public class Log {
 		}
 	}
 
+	public static void wtf(String tag, String msg) {
+		print(LEVEL_ASSERTION, "A/"+String.format("%s: %s", tag, msg));
+	}
 	public static void e(String tag, String msg) {
 		print(LEVEL_ERROR, "E/"+String.format("%s: %s", tag, msg));
 	}
@@ -81,6 +85,10 @@ public class Log {
 	}
 	
 	// overloading methods, default tag is used when no tag is provided
+
+	public static void wtf(String msg) {
+		wtf(TAG, msg);
+	}
 	public static void e(String msg) {
 		e(TAG, msg);
 	}
@@ -101,6 +109,7 @@ public class Log {
 	public static String getLogLevelString(){
 		return switch (level) {
 			case LEVEL_NONE -> "None";
+			case LEVEL_ASSERTION -> "Assertion";
 			case LEVEL_ERROR -> "Error";
 			case LEVEL_WARN -> "Warn";
 			case LEVEL_INFO -> "Info";
