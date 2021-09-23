@@ -12,10 +12,10 @@ public class LeafNode extends Node {
     private Node next;
 
     // constructor
-    public LeafNode() {
+    public LeafNode(int max) {
 
-        super();
-        records = new ArrayList<Address>(4);
+        super(max);
+        records = new ArrayList<Address>();
         setIsLeaf(true);
     }
 
@@ -69,7 +69,7 @@ public class LeafNode extends Node {
     public void splitPrep() {
 
         deleteKeys();
-        records = new ArrayList<Address>(4);
+        records = new ArrayList<Address>();
     }
 
 
