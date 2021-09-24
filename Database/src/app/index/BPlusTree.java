@@ -224,13 +224,13 @@ public class BPlusTree {
             parentNode = (ParentNode) curNode;
             for (int i=0; i<parentNode.getKeys().size(); i++) {
                 if ( key <= parentNode.getKey(i)){
-                    Log.d("getRecordsWithKey",String.format("[%d] key(%d) <= curKey(%d)", i, key, parentNode.getKey(i) ));
+                    Log.d("getRecordsWithKey",String.format("[%d] key(%d) <= curKey(%d), follow ith pointer ", i, key, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i);
                     blockAccess++;
                     break;
                 }
-                if (i >= parentNode.getKeys().size()-1){
-                    Log.d("getRecordsWithKey",String.format("[%d is last key]  key(%d) >= curKey(%d)", i, key, parentNode.getKey(i) ));
+                if (i == parentNode.getKeys().size()-1){
+                    Log.d("getRecordsWithKey",String.format("[%d] last key and key(%d) > curKey(%d), follow i+1th pointer", i, key, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i+1);
                     blockAccess++;
                     break;

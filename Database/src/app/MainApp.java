@@ -24,7 +24,7 @@ public class MainApp implements Constants {
 //		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
 
 		//TODO: generate sorted records (REMOVE LATER!!!!))
-		List<Record> records = Utility.generateRecords(325,6);
+		List<Record> records = Utility.generateRecords(55,6);
 		ArrayList<Integer> observingIdx = new ArrayList<>(Arrays.asList(9,10,54,55/*,324,325*/)); // for n=9, h increase on 10, 55, 325
 
 		disk = new Disk(Constants.DISK_SIZE, blockSize);
@@ -48,23 +48,29 @@ public class MainApp implements Constants {
 		disk.log();
 		index.logStructure();
 
-		testSearch();
+
+		// TODO: TO DELETE FOLLOWING
+		// try search valid and invalid keys
+		for (int i = -1; i < 11; i++) {
+			testSearch(i);
+		}
 
 
 		// TODO do experiences
 //		doExperience1();
 	}
 
-	private void testSearch(){
-		Log.d("TEST", "Searching Index!!");
-		ArrayList<Address> addresses = index.getRecordsWithKey(8);
+	private void testSearch(int key){
+		Log.d("TEST", "SEARCHING ON KEY "+key+"!!!");
+		ArrayList<Address> addresses = index.getRecordsWithKey(key);
 		ArrayList<Record> records = disk.getRecords(addresses);
 		if (addresses.size() != records.size()){
-			Log.wtf(TAG, "ERROR!!!! Something Wrong");
+			Log.wtf("TEST", "ERROR!!!! Something Wrong");
 		}
 		for (int i=0; i<addresses.size(); i++) {
-			Log.d(TAG, addresses.get(i).toString() + " -> "+records.get(i).toString());
+			Log.d("TEST", addresses.get(i).toString() + " -> "+records.get(i).toString());
 		}
+		Log.d("TEST", "------------------------------------------------------");
 	}
 
 	public void doExperience1(){
