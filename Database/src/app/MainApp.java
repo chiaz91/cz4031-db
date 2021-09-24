@@ -1,11 +1,9 @@
 package app;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import app.storage.Address;
+import app.storage.Block;
 import app.storage.Disk;
 import app.storage.Record;
 import app.index.BPlusTree;
@@ -43,39 +41,40 @@ public class MainApp implements Constants {
 		doExperience3();
 		pause("Press any key to start experience 4");
 		doExperience4();
+//		pause("Press any key to start experience 5");
+		doExperience5();
 	}
 
 
 	public void doExperience3(){
 		Log.i(TAG,"Experience 3 started, getting records with numVotes of 500");
-		ArrayList<Address> e3Records = index.getRecordsWithKey(500);
+		ArrayList<Address> e3RecordAddresses = index.getRecordsWithKey(500);
+		ArrayList<Record> records = disk.getRecords(e3RecordAddresses);
+		// records collected, do calculate average rating
 		double avgRating = 0;
-		Record tempRecord;
-		for (Address addr: e3Records) {
-			tempRecord = disk.getRecordAt(addr);
-			avgRating += tempRecord.getAvgRating();
-//			Log.d("TEST", addr + " -> "+tempRecord);
+		for (Record record: records) {
+			avgRating += record.getAvgRating();
 		}
-
-		// TODO: need to change disk accessing.. same block id should access more than once
-		avgRating /= e3Records.size();
+		avgRating /= records.size();
 		Log.i("Average rating="+avgRating);
 	}
 
 	public void doExperience4(){
 		Log.i(TAG,"Experience 4 started, getting records with numVotes between 30k-40k ");
-		ArrayList<Address> e4Records = index.getRecordsWithKeyInRange(30000,40000);
+		ArrayList<Address> e4RecordAddresses = index.getRecordsWithKeyInRange(30000,40000);
+		ArrayList<Record> records = disk.getRecords(e4RecordAddresses);
+		// records collected, do calculate average rating
 		double avgRating = 0;
-		Record tempRecord;
-		for (Address addr: e4Records) {
-			tempRecord = disk.getRecordAt(addr);
-			avgRating += tempRecord.getAvgRating();
-//			Log.d("TEST", addr + " -> "+tempRecord);
+		for (Record record: records) {
+			avgRating += record.getAvgRating();
 		}
-
-		// TODO: need to change disk accessing.. same block id should access more than once
-		avgRating /= e4Records.size();
+		avgRating /= records.size();
 		Log.i("Average rating="+avgRating);
+	}
+
+	// TODO: complete experience 5
+	public void doExperience5(){
+
 	}
 
 
@@ -110,16 +109,16 @@ public class MainApp implements Constants {
 
 		// TODO: TO DELETE FOLLOWING
 		// try search valid and invalid keys
-//		for (int i = -1; i < 11; i++) {
-//			testSearch(i);
-//		}
-		testSearch2(1,5);
+		for (int i = -1; i < 11; i++) {
+			testSearch(i);
+		}
+//		testSearch2(1,5);
 	}
 
 	private void testSearch(int key){
 		Log.d("TEST", "SEARCHING ON KEY "+key+"!!!");
 		ArrayList<Address> addresses = index.getRecordsWithKey(key);
-		ArrayList<Record> records = disk.getRecords(addresses);
+		ArrayList<Record> records =  disk.getRecords(addresses);
 		if (addresses.size() != records.size()){
 			Log.wtf("TEST", "ERROR!!!! Something Wrong");
 		}

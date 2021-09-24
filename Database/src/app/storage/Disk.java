@@ -4,6 +4,7 @@ import app.util.Log;
 import app.util.Utility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Disk {
     private static final String TAG = "Disk";
@@ -120,12 +121,29 @@ public class Disk {
     }
 
     public ArrayList<Record> getRecords(ArrayList<Address> addresses ){
+        HashMap<Integer, Block> cache = new HashMap<>();
         ArrayList<Record> records = new ArrayList<>();
+        int blockAccess = 0;
+        Block tempBlock = null;
         for (Address address: addresses) {
-            records.add(getRecordAt(address));
+            // try search from cache first, before access from disk
+            tempBlock = cache.get(address.getBlockId());
+            if (tempBlock == null){
+                Log.v("Disk Access", "Read from Disk "+address.getBlockId());
+                tempBlock = getBlockAt(address.getBlockId());
+                cache.put(address.getBlockId(), tempBlock);
+                blockAccess++;
+            } else {// accessing the block from cache, no block access
+                Log.v("Disk Access", "Read from cache "+address.getBlockId());
+            }
+
+//			Log.d("TEST", addr + " -> "+tempRecord);
+            records.add( tempBlock.getRecordAt(address.getOffset()) );
         }
+        Log.i(TAG, String.format("Retrieved %d records with %d block access", records.size(), blockAccess));
         return records;
     }
+
 
 
 

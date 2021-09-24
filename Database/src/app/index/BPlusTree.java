@@ -266,9 +266,7 @@ public class BPlusTree {
             }
         }
 
-        Log.d("B+Tree.keySearch", "result.size = "+result.size());
-        Log.d("B+Tree.keySearch", "blockAccess = "+blockAccess);
-
+        Log.i(TAG, String.format("keySearch(%d): %d records found with %d block access", key, result.size(), blockAccess));
         return result;
     }
 
@@ -326,9 +324,7 @@ public class BPlusTree {
             }
         }
 
-        Log.d("B+Tree.rangeSearch", "result.size = "+result.size());
-        Log.d("B+Tree.rangeSearch", "blockAccess = "+blockAccess);
-
+        Log.i(TAG, String.format("rangeSearch(%d, %d): %d records found with %d block access", min, max, result.size(), blockAccess));
         return result;
     }
 
