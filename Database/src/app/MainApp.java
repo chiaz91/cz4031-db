@@ -21,8 +21,67 @@ public class MainApp implements Constants {
 
 	public void run(int blockSize) throws Exception {
 		// read records from data file
-//		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
+		List<Record> records = Utility.readRecord(DATA_FILE_PATH);
 
+		disk = new Disk(Constants.DISK_SIZE, blockSize);
+		index = new BPlusTree(blockSize);
+
+		Log.i(TAG,"Running program with block size of "+blockSize);
+		Log.i(TAG,"Prepare to insert records into storage and create index");
+		Address recordAddr;
+		for (Record r: records) {
+			// inserting records into disk and create index!
+			recordAddr = disk.appendRecord(r);
+			index.insert( r.getNumVotes(), recordAddr);
+		}
+		Log.i(TAG,"Record inserted into storage and index created");
+		disk.log();
+		index.logStructure();
+
+		// TODO do experiences
+		pause("Press any key to start experience 3");
+		doExperience3();
+		pause("Press any key to start experience 4");
+		doExperience4();
+	}
+
+
+	public void doExperience3(){
+		Log.i(TAG,"Experience 3 started, getting records with numVotes of 500");
+		ArrayList<Address> e3Records = index.getRecordsWithKey(500);
+		double avgRating = 0;
+		Record tempRecord;
+		for (Address addr: e3Records) {
+			tempRecord = disk.getRecordAt(addr);
+			avgRating += tempRecord.getAvgRating();
+//			Log.d("TEST", addr + " -> "+tempRecord);
+		}
+
+		// TODO: need to change disk accessing.. same block id should access more than once
+		avgRating /= e3Records.size();
+		Log.i("Average rating="+avgRating);
+	}
+
+	public void doExperience4(){
+		Log.i(TAG,"Experience 4 started, getting records with numVotes between 30k-40k ");
+		ArrayList<Address> e4Records = index.getRecordsWithKeyInRange(30000,40000);
+		double avgRating = 0;
+		Record tempRecord;
+		for (Address addr: e4Records) {
+			tempRecord = disk.getRecordAt(addr);
+			avgRating += tempRecord.getAvgRating();
+//			Log.d("TEST", addr + " -> "+tempRecord);
+		}
+
+		// TODO: need to change disk accessing.. same block id should access more than once
+		avgRating /= e4Records.size();
+		Log.i("Average rating="+avgRating);
+	}
+
+
+	// TODO: removing the test run
+	public void testRun(int blockSize) throws Exception {
+		// read records from data file
 		//TODO: generate sorted records (REMOVE LATER!!!!))
 		List<Record> records = Utility.generateRecords(55,6);
 		ArrayList<Integer> observingIdx = new ArrayList<>(Arrays.asList(9,10,54,55/*,324,325*/)); // for n=9, h increase on 10, 55, 325
@@ -51,13 +110,10 @@ public class MainApp implements Constants {
 
 		// TODO: TO DELETE FOLLOWING
 		// try search valid and invalid keys
-		for (int i = -1; i < 11; i++) {
-			testSearch(i);
-		}
-
-
-		// TODO do experiences
-//		doExperience1();
+//		for (int i = -1; i < 11; i++) {
+//			testSearch(i);
+//		}
+		testSearch2(1,5);
 	}
 
 	private void testSearch(int key){
@@ -73,17 +129,20 @@ public class MainApp implements Constants {
 		Log.d("TEST", "------------------------------------------------------");
 	}
 
-	public void doExperience1(){
-		ArrayList<Address> e1Records = index.getRecordsWithKey(500);
-		double avgRating = 0;
-		Record tempRecord;
-		for (Address addr: e1Records) {
-			tempRecord = disk.getRecordAt(addr);
-			avgRating += tempRecord.getAvgRating();
+	private void testSearch2(int min, int max){
+		Log.d("TEST", "SEARCHING ON RANGE "+min+"~"+max+"!!!");
+		ArrayList<Address> addresses = index.getRecordsWithKeyInRange(min, max);
+		ArrayList<Record> records = disk.getRecords(addresses);
+		if (addresses.size() != records.size()){
+			Log.wtf("TEST", "ERROR!!!! Something Wrong");
 		}
-		avgRating /= e1Records.size();
-		Log.i("result="+avgRating);
+		for (int i=0; i<addresses.size(); i++) {
+			Log.d("TEST", addresses.get(i).toString() + " -> "+records.get(i).toString());
+		}
+		Log.d("TEST", "------------------------------------------------------");
 	}
+	// TEST RUN ABOVE
+
 
 	// app menu
 	private String getOptions(String[] options, boolean includeQuit){
@@ -96,9 +155,14 @@ public class MainApp implements Constants {
 		System.out.print("Enter the option: ");
 		return scanner.nextLine();
 	}
-
 	private void pause(){
-		System.out.print("Press any key to continue");
+		pause(null);
+	}
+	private void pause(String message){
+		if (message == null){
+			message = "Press any key to continue";
+		}
+		System.out.print(message);
 		scanner.nextLine();
 	}
 
@@ -111,7 +175,7 @@ public class MainApp implements Constants {
 		};
 		String input;
 		do {
-			System.out.println("CZ4031 - Database Assignment 1 (Group X)");
+			System.out.println("CZ4031 - Database Assignment 1 (Group "+GROUP_NUM+")");
 			input = getOptions(menu, true);
 			switch (input) {
 				case "1" -> {
@@ -198,10 +262,11 @@ public class MainApp implements Constants {
 	public static void main(String[] args) {
 		try {
 			Log.setLevel(Log.LEVEL_DEBUG);
-			Log.setTimestampEnabled(false);
 			MainApp app = new MainApp();
+			// TODO: change to display main menu later
 //			app.displayMainMenu();
 			app.run(BLOCK_SIZE_100);
+//			app.testRun(BLOCK_SIZE_100);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

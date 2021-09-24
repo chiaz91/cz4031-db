@@ -19,7 +19,7 @@ public class Log {
 	public static final String FORMAT_DETAIL = "yyyy-MM-dd HH:mm:ss.SSS";
 	public static final String FORMAT_SIMPLE = "HH:mm:ss";
 	private static int level = LEVEL_INFO;
-	private static boolean timestampEnabled = true;
+	private static boolean timestampEnabled = false;
 	private static String dateformat = FORMAT_DETAIL;
 	private static SimpleDateFormat sdf = new SimpleDateFormat(dateformat);
 

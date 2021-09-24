@@ -214,9 +214,9 @@ public class BPlusTree {
 
     // TODO for Experiment 3
     public ArrayList<Address> getRecordsWithKey(int key){
-        // TODO: traverse through the tree, loop the leaf nodes with same key
         ArrayList<Address> result = new ArrayList<>();
         int blockAccess = 1; // access the root??
+        Log.d("B+Tree.keySearch","[Block Access] Access root node");
         Node curNode = root;
         ParentNode parentNode;
         // searching for leaf node with key
@@ -224,13 +224,13 @@ public class BPlusTree {
             parentNode = (ParentNode) curNode;
             for (int i=0; i<parentNode.getKeys().size(); i++) {
                 if ( key <= parentNode.getKey(i)){
-                    Log.d("getRecordsWithKey",String.format("[%d] key(%d) <= curKey(%d), follow ith pointer ", i, key, parentNode.getKey(i) ));
+                    Log.d("B+Tree.keySearch",String.format("[Block Access] [%d] follow pointer i: key(%d)<=curKey(%d)", i, key, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i);
                     blockAccess++;
                     break;
                 }
                 if (i == parentNode.getKeys().size()-1){
-                    Log.d("getRecordsWithKey",String.format("[%d] last key and key(%d) > curKey(%d), follow i+1th pointer", i, key, parentNode.getKey(i) ));
+                    Log.d("B+Tree.keySearch",String.format("[Block Access] [%d] follow pointer i+1: last key and key(%d)>curKey(%d)", i, key, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i+1);
                     blockAccess++;
                     break;
@@ -238,13 +238,6 @@ public class BPlusTree {
             }
         }
         // after leaf node is found, find all records with same key
-        if (curNode == null){
-            Log.wtf("getRecordsWithKey","ERROR!!! Unable to find key!?");
-            return result;
-        }
-        if (!curNode.getIsLeaf()){
-            Log.wtf("getRecordsWithKey","ERROR!!! This should not be happen");
-        }
         LeafNode curLeaf = (LeafNode) curNode;
         boolean done = false;
         while(!done && curLeaf!=null){
@@ -265,7 +258,7 @@ public class BPlusTree {
                 // trying to check sibling node has remaining records of same key
                 if (curLeaf.getNext()!= null){
                     curLeaf = (LeafNode) curLeaf.getNext();
-                    Log.d("Proceed to sibling node");
+                    Log.d("B+Tree.keySearch", "[Block Access] Proceed to sibling node");
                     blockAccess++;
                 } else {
                     break;
@@ -273,16 +266,70 @@ public class BPlusTree {
             }
         }
 
-        Log.d("getRecordsWithKey", "result.size = "+result.size());
-        Log.d("getRecordsWithKey", "blockAccess = "+blockAccess);
+        Log.d("B+Tree.keySearch", "result.size = "+result.size());
+        Log.d("B+Tree.keySearch", "blockAccess = "+blockAccess);
 
         return result;
     }
 
     // TODO for Experiment 4
     public ArrayList<Address> getRecordsWithKeyInRange(int min, int max){
-        // TODO: traverse through the tree, loop the leaf nodes with keys in range
-        return null;
+        ArrayList<Address> result = new ArrayList<>();
+        int blockAccess = 1; // access the root??
+        Log.d("B+Tree.rangeSearch","[Block Access] Access root node");
+        Node curNode = root;
+        ParentNode parentNode;
+        // searching for leaf node with key
+        while (!curNode.getIsLeaf()){
+            parentNode = (ParentNode) curNode;
+            for (int i=0; i<parentNode.getKeys().size(); i++) {
+                if ( min <= parentNode.getKey(i)){
+                    Log.d("B+Tree.rangeSearch",String.format("[Block Access] [%d] follow pointer i: min(%d)<=curKey(%d)", i, min, parentNode.getKey(i) ));
+                    curNode = parentNode.getChild(i);
+                    blockAccess++;
+                    break;
+                }
+                if (i == parentNode.getKeys().size()-1){
+                    Log.d("B+Tree.rangeSearch",String.format("[Block Access] [%d] follow pointer i+1: last key and min(%d)>curKey(%d)", i, min, parentNode.getKey(i) ));
+                    curNode = parentNode.getChild(i+1);
+                    blockAccess++;
+                    break;
+                }
+            }
+        }
+        // after leaf node is found, find all records with same key
+        LeafNode curLeaf = (LeafNode) curNode;
+        boolean done = false;
+        while(!done && curLeaf!=null){
+            // finding same keys within leaf node
+            for (int i=0; i<curLeaf.getKeys().size(); i++){
+                // found same key, add into result list
+                if (curLeaf.getKey(i) >= min && curLeaf.getKey(i) <= max){
+                    result.add(curLeaf.getRecord(i));
+                    continue;
+                }
+                // if curKey > searching key, no need to continue searching
+                if (curLeaf.getKey(i) > max){
+                    done = true;
+                    break;
+                }
+            }
+            if (!done){
+                // trying to check sibling node has remaining records of same key
+                if (curLeaf.getNext()!= null){
+                    curLeaf = (LeafNode) curLeaf.getNext();
+                    Log.d("B+Tree.rangeSearch", "[Block Access] Proceed to sibling node");
+                    blockAccess++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        Log.d("B+Tree.rangeSearch", "result.size = "+result.size());
+        Log.d("B+Tree.rangeSearch", "blockAccess = "+blockAccess);
+
+        return result;
     }
 
     // TODO for Experiment 5
