@@ -3,7 +3,6 @@ package app;
 import java.util.*;
 
 import app.storage.Address;
-import app.storage.Block;
 import app.storage.Disk;
 import app.storage.Record;
 import app.index.BPlusTree;
@@ -34,7 +33,7 @@ public class MainApp implements Constants {
 		}
 		Log.i(TAG,"Record inserted into storage and index created");
 		disk.log();
-		index.logStructure();
+//		index.logStructure(); // actual data is too big to print out...
 
 		// TODO do experiences
 		pause("Press any key to start experience 3");
