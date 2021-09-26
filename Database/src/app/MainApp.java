@@ -262,8 +262,8 @@ public class MainApp implements Constants {
 			Log.setLevel(Log.LEVEL_DEBUG);
 			MainApp app = new MainApp();
 			// TODO: change to display main menu later
-//			app.displayMainMenu();
-			app.run(BLOCK_SIZE_100);
+			app.displayMainMenu();
+//			app.run(BLOCK_SIZE_100);
 //			app.testRun(BLOCK_SIZE_100);
 		} catch (Exception e) {
 			e.printStackTrace();
