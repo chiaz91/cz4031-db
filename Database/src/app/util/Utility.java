@@ -72,9 +72,9 @@ public class Utility {
 		String[] suffix = { "B", "KB", "MB", "GB", "TB" };
 		int order = 0;
 		if (size>0){
-			order = (int) (Math.log(size)/Math.log(1024));
+			order = (int) (Math.log(size)/Math.log(1000));
 		}
-		double normSize = size / Math.pow(1024, order);
+		double normSize = size / Math.pow(1000, order);
 		return String.format("%.2f %s", normSize, suffix[order]);
 	}
 
