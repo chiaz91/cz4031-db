@@ -33,7 +33,9 @@ public class MainApp implements Constants {
 		}
 		Log.i(TAG,"Record inserted into storage and index created");
 		disk.log();
-//		index.logStructure(); // actual data is too big to print out...
+//		index.logStructure(1); // printing root and first level?
+
+		index.treeStats();
 
 		// TODO do experiences
 		pause("Press any key to start experience 3");

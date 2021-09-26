@@ -377,14 +377,22 @@ public class BPlusTree {
     }
 
 
+
     public void logStructure(){
-        logStructure(0, root);
+        logStructure(0, Integer.MAX_VALUE, root);
+    }
+
+    public void logStructure(int maxLevel){
+        logStructure(0, maxLevel, root);
     }
 
     // recursive logging of tree structure
-    private void logStructure(int level, Node curNode){
+    private void logStructure(int level, int maxLevel,  Node curNode){
         if (curNode == null){
             curNode = root;
+        }
+        if (level > maxLevel){
+            return;
         }
 
         System.out.print("h="+level+"; ");
@@ -394,7 +402,7 @@ public class BPlusTree {
         }
         ParentNode parentNode = (ParentNode) curNode;
         for (Node child: parentNode.getChildren()) {
-            logStructure(level+1, child);
+            logStructure(level+1, maxLevel, child);
         }
     }
 }
