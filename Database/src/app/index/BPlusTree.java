@@ -12,6 +12,8 @@ public class BPlusTree {
     int parentMinKeys;
     int leafMinKeys;
     Node root;
+    int height;
+    int nodeCount;
 
     public BPlusTree(int blockSize){
         // TODO: calculate n (max number of keys)?
@@ -22,6 +24,7 @@ public class BPlusTree {
         Log.i(TAG, "init: blockSize = "+blockSize+", maxKeys = "+maxKeys);
         Log.i(TAG, "MinKeys: parent="+parentMinKeys+", leaf="+leafMinKeys);
         root = createFirst();
+        nodeCount = 0;
     }
 
     // to create first node
@@ -29,6 +32,8 @@ public class BPlusTree {
 
         LeafNode newRoot = new LeafNode();
         newRoot.setIsRoot(true);
+        height = 1;
+        nodeCount = 1;
         return newRoot;
     }
 
@@ -141,6 +146,7 @@ public class BPlusTree {
             newRoot.addChild(old);
             newRoot.addChild(leaf2);
             root = newRoot;
+            height++;
         }
 
         else if (old.getParent().getKeys().size() < maxKeys)
@@ -148,6 +154,9 @@ public class BPlusTree {
 
         else 
             splitParent(old.getParent(), leaf2);
+
+        // updating nodeCount
+        nodeCount++;
     }
 
     //to split a full parent node
@@ -198,6 +207,7 @@ public class BPlusTree {
             newRoot.addChild(parent);
             newRoot.addChild(parent2);
             root = newRoot;
+            height++;
         }
 
         else if (parent.getParent().getKeys().size() < maxKeys)
@@ -205,6 +215,9 @@ public class BPlusTree {
 
         else 
             splitParent(parent.getParent(), parent2);
+
+        // updating nodeCount
+        nodeCount++;
     }
 
 
@@ -272,6 +285,28 @@ public class BPlusTree {
         }
         Log.i(TAG, String.format("keySearch(%d): %d records found with %d node access", key, result.size(), blockAccess));
         return result;
+    }
+
+    public void treeStats() {
+
+        ArrayList<Integer> rootKeys = new ArrayList<Integer>();
+        ArrayList<Integer> firstKeys = new ArrayList<Integer>();
+        ParentNode rootCopy = (ParentNode) root;
+        Node first = rootCopy.getChild(0);
+
+        for (int i = 0; i < root.getKeys().size(); i++) {
+
+            rootKeys.add(root.getKey(i));
+        }
+
+        for (int i = 0; i < first.getKeys().size(); i++) {
+
+            firstKeys.add(first.getKey(i));
+        }
+
+        Log.d("treeStats", "n = " + maxKeys + ", number of nodes = " + nodeCount + ", height = " + height);
+        Log.d("rootContents", "root node contents = " + rootKeys);
+        Log.d("firstContents", "first child contents = " + firstKeys);
     }
 
     // TODO for Experiment 4
