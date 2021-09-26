@@ -1,6 +1,7 @@
 package app;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,17 +24,25 @@ public class MainApp implements Constants {
 //		List<Record> records = Utility.readRecord(DATA_TEST_FILE_PATH);
 
 		//TODO: generate sorted records (REMOVE LATER!!!!))
-		List<Record> records = Utility.generateRecords(55,6);
+		List<Record> records = Utility.generateRecords(325,6);
+		ArrayList<Integer> observingIdx = new ArrayList<>(Arrays.asList(9,10,54,55/*,324,325*/)); // for n=9, h increase on 10, 55, 325
 
 		disk = new Disk(Constants.DISK_SIZE, blockSize);
 		index = new BPlusTree(blockSize);
 
 		Log.i(TAG,"Before insert into disk");
+		int c =0;
 		Address recordAddr;
 		for (Record r: records) {
 			// inserting records into disk and create index!
 			recordAddr = disk.appendRecord(r);
 			index.insert( r.getNumVotes(), recordAddr);
+			// TODO: REMOVE TESTING
+			c++;
+			if ( observingIdx.contains(c) ){
+				Log.d("TEST", "OBSERVING ON "+c);
+				index.logStructure();
+			}
 		}
 		Log.i(TAG,"After insert into disk");
 		disk.log();
@@ -47,7 +56,7 @@ public class MainApp implements Constants {
 	}
 
 	private void testSearch(){
-		Log.d(TAG, "Test Searching Index!!");
+		Log.d("TEST", "Searching Index!!");
 		ArrayList<Address> addresses = index.getRecordsWithKey(8);
 		ArrayList<Record> records = disk.getRecords(addresses);
 		if (addresses.size() != records.size()){
