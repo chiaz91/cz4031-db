@@ -1,4 +1,4 @@
-package app.entity;
+package app.storage;
 
 public class Address {
     int blockId;
@@ -23,5 +23,10 @@ public class Address {
 
     public void setOffset(int offset) {
         this.offset = offset;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("@%d-%d", blockId, offset);
     }
 }
