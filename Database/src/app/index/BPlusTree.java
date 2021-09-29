@@ -238,14 +238,14 @@ public class BPlusTree {
             parentNode = (ParentNode) curNode;
             for (int i=0; i<parentNode.getKeys().size(); i++) {
                 if ( key <= parentNode.getKey(i)){
-                    Log.d("B+Tree.keySearch", curNode.toString());
+                    Log.v("B+Tree.keySearch", curNode.toString());
                     Log.d("B+Tree.keySearch",String.format("[Node Access] follow pointer [%d]: key(%d)<=curKey(%d)", i, key, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i);
                     blockAccess++;
                     break;
                 }
                 if (i == parentNode.getKeys().size()-1){
-                    Log.d("B+Tree.keySearch", curNode.toString());
+                    Log.v("B+Tree.keySearch", curNode.toString());
                     Log.d("B+Tree.keySearch",String.format("[Node Access] follow pointer [%d+1]: last key and key(%d)>curKey(%d)", i, key, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i+1);
                     blockAccess++;
@@ -285,7 +285,7 @@ public class BPlusTree {
         if (siblingAccess > 0){
             Log.d("B+Tree.keySearch", "[Node Access] "+siblingAccess+" sibling node access");
         }
-        Log.i(TAG, String.format("keySearch(%d): %d records found with %d node access", key, result.size(), blockAccess));
+        Log.i("B+Tree.keySearch", String.format("input(%d): %d records found with %d node access", key, result.size(), blockAccess));
         return result;
     }
 
@@ -324,14 +324,14 @@ public class BPlusTree {
             parentNode = (ParentNode) curNode;
             for (int i=0; i<parentNode.getKeys().size(); i++) {
                 if ( min <= parentNode.getKey(i)){
-                    Log.d("B+Tree.rangeSearch", curNode.toString());
+                    Log.v("B+Tree.rangeSearch", curNode.toString());
                     Log.d("B+Tree.rangeSearch",String.format("[Node Access] follow pointer [%d]: min(%d)<=curKey(%d)", i, min, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i);
                     nodeAccess++;
                     break;
                 }
                 if (i == parentNode.getKeys().size()-1){
-                    Log.d("B+Tree.rangeSearch", curNode.toString());
+                    Log.v("B+Tree.rangeSearch", curNode.toString());
                     Log.d("B+Tree.rangeSearch",String.format("[Node Access] follow pointer [%d+1]: last key and min(%d)>curKey(%d)", i, min, parentNode.getKey(i) ));
                     curNode = parentNode.getChild(i+1);
                     nodeAccess++;
@@ -370,7 +370,7 @@ public class BPlusTree {
         if (siblingAccess > 0){
             Log.d("B+Tree.rangeSearch", "[Node Access] "+siblingAccess+" sibling node access");
         }
-        Log.i(TAG, String.format("rangeSearch(%d, %d): %d records found with %d node access", min, max, result.size(), nodeAccess));
+        Log.i("B+Tree.rangeSearch", String.format("input(%d, %d): %d records found with %d node access", min, max, result.size(), nodeAccess));
         return result;
     }
 

@@ -49,6 +49,6 @@ public class Record {
 
 	@Override
 	public String toString() {
-		return "Record [tconst=" + tconst + ", avgRating=" + avgRating + ", numVotes=" + numVotes + "]";
+		return "{" + tconst + "; " + avgRating + "; " + numVotes + "}";
 	}
 }

@@ -170,8 +170,7 @@ public class MainApp implements Constants {
 		String[] menu = {
 				"Experience with block size 100B",
 				"Experience with block size 500B",
-				"Show team members",
-//				"Log setting"
+				"Log setting"
 		};
 		String input;
 		do {
@@ -186,22 +185,9 @@ public class MainApp implements Constants {
 					run(BLOCK_SIZE_500);
 					pause();
 				}
-				case "3" -> {
-					displayTeamMembers();
-					pause();
-				}
-				case "4" -> displayLogSetting();
+				case "3" -> displayLogSetting();
 			}
 		} while (!input.equals("q"));
-	}
-
-	// TODO: to be filled up?
-	public void displayTeamMembers(){
-		System.out.println("Team members");
-		System.out.println("[1] <Matric No.> <Name>");
-		System.out.println("[2] <Matric No.> <Name>");
-		System.out.println("[3] <Matric No.> <Name>");
-		System.out.println("[4] <Matric No.> <Name>");
 	}
 
 	public void displayLogSetting(){
