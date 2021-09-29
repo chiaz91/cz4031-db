@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.Constants;
 import app.storage.Record;
 
 
@@ -25,8 +26,8 @@ public class Utility {
 		Log.i(TAG, "Loading records from "+path);
 		if (!dataFile.exists()) {
 			// file is not exist, try to add current directory and try again
-			String dir = System.getProperty("user.dir");
-			dataFile = new File(dir, path);
+
+			dataFile = new File(Constants.PROJECT_DIRECTORY, path);
 			Log.i(TAG, "Failed, re-attempt to load record from "+dataFile.getAbsolutePath());
 			if (!dataFile.exists()){
 				throw new FileNotFoundException("File not exist");
