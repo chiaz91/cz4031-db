@@ -83,7 +83,7 @@ public class MainApp implements Constants {
 	public void testRun(int blockSize) throws Exception {
 		// read records from data file
 		//TODO: generate sorted records (REMOVE LATER!!!!))
-		List<Record> records = Utility.generateRecords(55,6);
+		List<Record> records = Utility.generateRecords(10);
 		ArrayList<Integer> observingIdx = new ArrayList<>(Arrays.asList(9,10,54,55/*,324,325*/)); // for n=9, h increase on 10, 55, 325
 
 		disk = new Disk(Constants.DISK_SIZE, blockSize);
@@ -109,10 +109,9 @@ public class MainApp implements Constants {
 
 
 		// TODO: TO DELETE FOLLOWING
+		testDeletion(5);
 		// try search valid and invalid keys
-		for (int i = -1; i < 11; i++) {
-			testSearch(i);
-		}
+
 //		testSearch2(1,5);
 	}
 
@@ -139,6 +138,12 @@ public class MainApp implements Constants {
 		for (int i=0; i<addresses.size(); i++) {
 			Log.d("TEST", addresses.get(i).toString() + " -> "+records.get(i).toString());
 		}
+		Log.d("TEST", "------------------------------------------------------");
+	}
+
+	private void testDeletion(int key){
+		Log.d("TEST", "testDeletion ON KEY "+key+"!!!");
+		index.deleteKey(key);
 		Log.d("TEST", "------------------------------------------------------");
 	}
 	// TEST RUN ABOVE
@@ -264,9 +269,9 @@ public class MainApp implements Constants {
 			Log.setLevel(Log.LEVEL_DEBUG);
 			MainApp app = new MainApp();
 			// TODO: change to display main menu later
-			app.displayMainMenu();
+//			app.displayMainMenu();
 //			app.run(BLOCK_SIZE_100);
-//			app.testRun(BLOCK_SIZE_100);
+			app.testRun(BLOCK_SIZE_100);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
