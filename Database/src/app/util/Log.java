@@ -107,15 +107,15 @@ public class Log {
 
 
 	public static String getLogLevelString(){
-		return switch (level) {
-			case LEVEL_NONE -> "None";
-			case LEVEL_ASSERTION -> "Assertion";
-			case LEVEL_ERROR -> "Error";
-			case LEVEL_WARN -> "Warn";
-			case LEVEL_INFO -> "Info";
-			case LEVEL_DEBUG -> "Debug";
-			case LEVEL_VERBOSE -> "Verbose";
-			default -> "Unknown";
-		};
+		switch (level) {
+			case LEVEL_NONE : return "None";
+			case LEVEL_ASSERTION: return "Assertion";
+			case LEVEL_ERROR: return  "Error";
+			case LEVEL_WARN: return  "Warn";
+			case LEVEL_INFO: return  "Info";
+			case LEVEL_DEBUG: return  "Debug";
+			case LEVEL_VERBOSE: return  "Verbose";
+			default: return "Unknown";
+		}
 	}
 }
