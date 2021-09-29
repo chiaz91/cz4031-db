@@ -222,14 +222,12 @@ public class BPlusTree {
 
     public void deleteKey(int key) {
 
-        ArrayList<LeafNode> changed = new ArrayList<LeafNode>();
         ArrayList<Integer> keys;
         LeafNode leaf;
 
         while (getRecordsWithKey(key).size() != 0) {
 
             leaf = searchLeaf(key);
-            changed.add(leaf);
             keys = leaf.getKeys();
             
             for (int i = 0; i < keys.size(); i++) {
