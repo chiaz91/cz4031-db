@@ -136,5 +136,17 @@ public abstract class Node {
         return key;
     }
 
+    // delete the node
+    public void deleteNode() {
+
+        isLeaf = false;
+        isRoot = false;
+        if (parent != null) {
+
+            parent.deleteChild(this);
+            parent = null;
+        }
+    }
+
     abstract void logStructure();
 }

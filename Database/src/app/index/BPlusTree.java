@@ -220,6 +220,116 @@ public class BPlusTree {
         nodeCount++;
     }
 
+    public void deleteKey(int key) {
+
+        ArrayList<Integer> keys;
+        LeafNode leaf;
+
+        while (getRecordsWithKey(key).size() != 0) {
+
+            leaf = searchLeaf(key);
+            keys = leaf.getKeys();
+            
+            for (int i = 0; i < keys.size(); i++) {
+                
+                if (keys.get(i) == key) {
+
+                    leaf.deleteKey(i);
+
+                    if (!leaf.getIsRoot())
+                        resetLeaf(leaf);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    public void resetLeaf(LeafNode node) {
+
+        if (node.getKeys().size() >= leafMinKeys) 
+            return;
+
+        if (node.getKeys().size() == 0) {
+
+            node.deleteNode();
+            resetParent(node.getParent());
+            return;
+        }
+        
+        LeafNode before = (LeafNode) node.getParent().getBefore(node);
+        LeafNode after = (LeafNode) node.getParent().getAfter(node);
+        int needed = leafMinKeys - node.getKeys().size();
+        int bSpare = 0;
+        int aSpare = 0;
+
+        if (before != null) 
+            bSpare += before.getKeys().size() - leafMinKeys;
+
+        if (after != null) 
+            aSpare += after.getKeys().size() - leafMinKeys;
+
+        if (needed > aSpare + bSpare) {
+
+            for (int i = 0; i < maxKeys-(bSpare+leafMinKeys); i++) {
+
+                before.addRecord(node.getKey(i), node.getRecord(i));
+            }
+
+            for (int i = maxKeys-(bSpare+leafMinKeys); i < needed; i++) {
+
+                after.addRecord(node.getKey(i), node.getRecord(i));
+            }
+
+            node.deleteNode();
+        }
+
+        resetParent(node.getParent());
+    }
+
+    public void resetParent(ParentNode parent) {
+
+        if (parent.getIsRoot()) {
+
+            if (parent.getKeys().size() > 1)
+                return;
+
+            else {
+
+                parent.deleteNode();
+                return;
+            }
+        }
+        
+        ParentNode before = (ParentNode) parent.getParent().getBefore(parent);
+        ParentNode after = (ParentNode) parent.getParent().getAfter(parent);
+        int needed = leafMinKeys - parent.getKeys().size();
+        int bSpare = 0;
+        int aSpare = 0;
+
+        if (before != null) 
+            bSpare += before.getKeys().size() - leafMinKeys;
+
+        if (after != null) 
+            aSpare += after.getKeys().size() - leafMinKeys;
+
+        if (needed > aSpare + bSpare) {
+
+            for (int i = 0; i < maxKeys-(bSpare+leafMinKeys); i++) {
+
+                before.addChild(parent.getChild(i));
+            }
+
+            for (int i = maxKeys-(bSpare+leafMinKeys); i < needed; i++) {
+
+                after.addChild(parent.getChild(i));
+            }
+
+            parent.deleteNode();
+        }
+
+        resetParent(parent.getParent());
+    }
 
 
     // TODO for Experiment 2 (partially done)

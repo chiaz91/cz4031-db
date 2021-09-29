@@ -60,12 +60,43 @@ public class ParentNode extends Node {
         return index;
     }
 
+    // prepare parentnode for splitting
     public void splitPrep() {
 
         deleteKeys();
         children = new ArrayList<Node>();
     }
 
+    // delete a child
+    public void deleteChild(Node child) {
+
+        children.remove(child);
+        deleteKeys();
+        
+        for (int i = 0; i < children.size(); i++) {
+
+            if (i != 0)
+            addKey(children.get(i).findSmallestKey());
+        }
+    }
+
+    // get the child before
+    public Node getBefore(Node node) {
+
+        if (children.indexOf(node) != 0)
+            return children.get(children.indexOf(node)-1);
+
+        return null;
+    }
+
+    // get the child after
+    public Node getAfter(Node node) {
+
+        if (children.indexOf(node) != children.size()-1)
+            return children.get(children.indexOf(node)+1);
+
+        return null;
+    }
 
 
     @Override
