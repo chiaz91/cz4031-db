@@ -66,12 +66,18 @@ public class LeafNode extends Node {
         next = sister;
     }
 
+    // prepare leafnode for splitting
     public void splitPrep() {
 
         deleteKeys();
         records = new ArrayList<Address>();
     }
 
+    // delete a record from leafnode
+    public void deleteRecord(int index) {
+
+        records.remove(index);
+    }
 
     @Override
     void logStructure() {

@@ -102,10 +102,7 @@ public abstract class Node {
     // delete key from index
     public void deleteKey(int index) {
 
-        for (int i = index; i < keys.size() -2; i++) 
-            keys.add(i+1, keys.get(i));
-        
-        keys.remove(keys.size()-1);
+        keys.remove(index);
     }
 
     // for deleting keys before splitting

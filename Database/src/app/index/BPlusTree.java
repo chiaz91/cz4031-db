@@ -235,6 +235,7 @@ public class BPlusTree {
                 if (keys.get(i) == key) {
 
                     leaf.deleteKey(i);
+                    leaf.deleteRecord(i);
 
                     if (!leaf.getIsRoot())
                         resetLeaf(leaf);
@@ -271,14 +272,25 @@ public class BPlusTree {
 
         if (needed > aSpare + bSpare) {
 
-            for (int i = 0; i < maxKeys-(bSpare+leafMinKeys); i++) {
+            if (before != null && after != null) {
 
-                before.addRecord(node.getKey(i), node.getRecord(i));
+                for (int i = 0; i < maxKeys-(bSpare+leafMinKeys); i++) 
+                    before.addRecord(node.getKey(i), node.getRecord(i));
+                
+                for (int i = maxKeys-(bSpare+leafMinKeys); i < node.getKeys().size(); i++) 
+                    after.addRecord(node.getKey(i), node.getRecord(i));
             }
 
-            for (int i = maxKeys-(bSpare+leafMinKeys); i < needed; i++) {
+            if (before == null) {
 
-                after.addRecord(node.getKey(i), node.getRecord(i));
+                for (int i = 0; i < node.getKeys().size(); i++) 
+                    after.addRecord(node.getKey(i), node.getRecord(i));
+            }
+
+            if (after == null) {
+
+                for (int i = 0; i < node.getKeys().size(); i++) 
+                    before.addRecord(node.getKey(i), node.getRecord(i));
             }
 
             node.deleteNode();
