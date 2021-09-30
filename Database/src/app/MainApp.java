@@ -83,7 +83,7 @@ public class MainApp implements Constants {
 	public void testRun(int blockSize) throws Exception {
 		// read records from data file
 		//TODO: generate sorted records (REMOVE LATER!!!!))
-		List<Record> records = Utility.generateRecords(10);
+		List<Record> records = Utility.generateRecords(60, 10);
 		ArrayList<Integer> observingIdx = new ArrayList<>(Arrays.asList(9,10,54,55/*,324,325*/)); // for n=9, h increase on 10, 55, 325
 
 		disk = new Disk(Constants.DISK_SIZE, blockSize);

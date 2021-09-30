@@ -76,6 +76,7 @@ public class LeafNode extends Node {
     // delete a record from leafnode
     public void deleteRecord(int index) {
 
+        deleteKey(index);
         records.remove(index);
     }
 
