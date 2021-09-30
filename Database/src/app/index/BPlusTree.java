@@ -246,7 +246,6 @@ public class BPlusTree {
                     break;
                 }
             }
-            logStructure();
         }
     }
 
@@ -313,12 +312,9 @@ public class BPlusTree {
                     before = searchLeaf(copy.findSmallestKey()-1);
             }
 
-            if (after == null) 
-                after = node.getNext();
-                
             // change before to point to after
-            before.setNext(after);
-            
+            before.setNext(node.getNext());
+
             // delete node
             node.deleteNode();
         }
@@ -375,9 +371,15 @@ public class BPlusTree {
         // if node is root
         if (parent.getIsRoot()) {
 
-            // if root has at least 2 children, do nothing
-            if (parent.getChildren().size() > 1)
+            // if root has at least 2 children, reset and return
+            if (parent.getChildren().size() > 1) {
+
+                // lazy man's reset
+                Node child = parent.getChild(0);
+                parent.deleteChild(child);
+                parent.addChild(child);
                 return;
+            }
 
             // if root has 1 child, delete root level
             else {
@@ -394,6 +396,7 @@ public class BPlusTree {
         int needed = parentMinKeys - parent.getKeys().size();
         int bSpare = 0;
         int aSpare = 0;
+        ParentNode copy;
 
         if (before != null) 
             bSpare += before.getKeys().size() - parentMinKeys;
@@ -408,7 +411,7 @@ public class BPlusTree {
             if (before != null && after != null) {
 
                 // insert as many records as possible into before node
-                for (int i = 0; i < maxKeys-(bSpare+parentMinKeys)+1; i++) 
+                for (int i = 0; i < maxKeys-(bSpare+parentMinKeys)+1 && i < parent.getChildren().size(); i++) 
                     before.addChild(parent.getChild(i));
                 
                 // insert the rest into after node
@@ -431,6 +434,7 @@ public class BPlusTree {
             }
 
             // delete after merging
+            copy = parent.getParent();
             parent.deleteNode();
         }
 
@@ -440,17 +444,17 @@ public class BPlusTree {
             if (before != null && after != null) {
 
                 // take the last few keys from before node that can be spared
-                for (int i = 0; i < bSpare; i++) {
+                for (int i = 0; i < bSpare && i < needed; i++) {
 
-                    parent.addChild(before.getChild(before.getChildren().size()-1 -i));
-                    before.deleteChild(before.getChild(before.getChildren().size()-1 -i));
+                    parent.addChild(before.getChild(before.getChildren().size()-1), 0);
+                    before.deleteChild(before.getChild(before.getChildren().size()-1));
                 }
                 
                 // take the rest from after node
-                for (int i = bSpare, j = 0; i < needed; i++, j++) {
+                for (int i = bSpare; i < needed; i++) {
 
-                    parent.addChild(after.getChild(j));
-                    after.deleteChild(after.getChild(j));
+                    parent.addChild(after.getChild(0));
+                    after.deleteChild(after.getChild(0));
                 }
             }
 
@@ -459,8 +463,8 @@ public class BPlusTree {
                 // take all from after node
                 for (int i = 0; i < needed; i++) {
 
-                    parent.addChild(after.getChild(i));
-                    after.deleteChild(after.getChild(i));
+                    parent.addChild(after.getChild(0));
+                    after.deleteChild(after.getChild(0));
                 }
             }
 
@@ -469,13 +473,15 @@ public class BPlusTree {
                 // take all from before node
                 for (int i = 0; i < needed; i++) {
 
-                    parent.addChild(before.getChild(before.getChildren().size()-1 -i));
+                    parent.addChild(before.getChild(before.getChildren().size()-1 -i), 0);
                     before.deleteChild(before.getChild(before.getChildren().size()-1 -i));
                 }
             }
+            
+            copy = parent.getParent();
         }
 
-        resetParent(parent.getParent());
+        resetParent(copy);
     }
 
 
@@ -530,7 +536,7 @@ public class BPlusTree {
             if (!done){
                 // trying to check sibling node has remaining records of same key
                 if (curLeaf.getNext()!= null){
-                    curLeaf = (LeafNode) curLeaf.getNext();
+                    curLeaf = curLeaf.getNext();
                     blockAccess++;
                     siblingAccess++;
                 } else {

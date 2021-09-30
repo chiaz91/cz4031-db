@@ -136,13 +136,28 @@ public abstract class Node {
     // delete the node
     public void deleteNode() {
 
-        isLeaf = false;
-        isRoot = false;
         if (parent != null) {
 
             parent.deleteChild(this);
             parent = null;
         }
+
+        if (this.isLeaf) {
+            
+            LeafNode copy = (LeafNode) this;
+            copy.deleteRecords();
+            copy.setNext(null);
+        }
+
+        else {
+
+            ParentNode copy = (ParentNode) this;
+            copy.deleteChildren();
+        }
+
+        isLeaf = false;
+        isRoot = false;
+        keys = new ArrayList<Integer>();
     }
 
     abstract void logStructure();

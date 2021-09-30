@@ -42,7 +42,7 @@ public class MainApp implements Constants {
 		doExperience3();
 		pause("Press any key to start experience 4");
 		doExperience4();
-//		pause("Press any key to start experience 5");
+		pause("Press any key to start experience 5");
 		doExperience5();
 	}
 
@@ -76,6 +76,7 @@ public class MainApp implements Constants {
 	// TODO: complete experience 5
 	public void doExperience5(){
 
+		index.deleteKey(1000);
 	}
 
 
@@ -109,7 +110,7 @@ public class MainApp implements Constants {
 
 
 		// TODO: TO DELETE FOLLOWING
-		testDeletion(5);
+		//testDeletion(5);
 		// try search valid and invalid keys
 
 //		testSearch2(1,5);
@@ -269,9 +270,9 @@ public class MainApp implements Constants {
 			Log.setLevel(Log.LEVEL_DEBUG);
 			MainApp app = new MainApp();
 			// TODO: change to display main menu later
-//			app.displayMainMenu();
-//			app.run(BLOCK_SIZE_100);
-			app.testRun(BLOCK_SIZE_100);
+			app.displayMainMenu();
+			// app.run(BLOCK_SIZE_100);
+			// app.testRun(BLOCK_SIZE_100);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

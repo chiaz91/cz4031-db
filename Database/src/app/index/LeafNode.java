@@ -17,6 +17,7 @@ public class LeafNode extends Node {
         super();
         records = new ArrayList<Address>();
         setIsLeaf(true);
+        setNext(null);
     }
 
     // get arraylist of all records
@@ -78,6 +79,12 @@ public class LeafNode extends Node {
 
         deleteKey(index);
         records.remove(index);
+    }
+
+    // delete all records
+    public void deleteRecords() {
+
+        records = new ArrayList<Address>();
     }
 
     @Override

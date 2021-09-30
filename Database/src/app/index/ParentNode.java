@@ -52,12 +52,25 @@ public class ParentNode extends Node {
         else {
 
             index = this.addKey(key);
-
             this.children.add(index +1, child);
         }
 
         child.setParent(this);
         return index;
+    }
+
+    // add child at index 0 
+    public void addChild(Node child, int index) {
+
+        children.add(0, child);
+        child.setParent(this);
+        deleteKeys();
+        
+        for (int i = 0; i < children.size(); i++) {
+
+            if (i != 0)
+                addKey(children.get(i).findSmallestKey());
+        }
     }
 
     // prepare parentnode for splitting
@@ -76,8 +89,14 @@ public class ParentNode extends Node {
         for (int i = 0; i < children.size(); i++) {
 
             if (i != 0)
-            addKey(children.get(i).findSmallestKey());
+                addKey(children.get(i).findSmallestKey());
         }
+    }
+
+    // delete all children
+    public void deleteChildren() {
+
+        children = new ArrayList<Node>();
     }
 
     // get the child before
