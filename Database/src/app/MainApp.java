@@ -176,38 +176,26 @@ public class MainApp implements Constants {
 		String[] menu = {
 				"Experience with block size 100B",
 				"Experience with block size 500B",
-				"Show team members",
-//				"Log setting"
+				"Log setting"
 		};
 		String input;
 		do {
 			System.out.println("CZ4031 - Database Assignment 1 (Group "+GROUP_NUM+")");
 			input = getOptions(menu, true);
 			switch (input) {
-				case "1" -> {
+				case "1":
 					run(BLOCK_SIZE_100);
 					pause();
-				}
-				case "2" -> {
+					break;
+				case "2" :
 					run(BLOCK_SIZE_500);
 					pause();
-				}
-				case "3" -> {
-					displayTeamMembers();
-					pause();
-				}
-				case "4" -> displayLogSetting();
+					break;
+				case "3":
+					displayLogSetting();
+					break;
 			}
 		} while (!input.equals("q"));
-	}
-
-	// TODO: to be filled up?
-	public void displayTeamMembers(){
-		System.out.println("Team members");
-		System.out.println("[1] <Matric No.> <Name>");
-		System.out.println("[2] <Matric No.> <Name>");
-		System.out.println("[3] <Matric No.> <Name>");
-		System.out.println("[4] <Matric No.> <Name>");
 	}
 
 	public void displayLogSetting(){
@@ -222,9 +210,15 @@ public class MainApp implements Constants {
 			System.out.println("Log Setting");
 			input = getOptions(menu, true);
 			switch (input){
-				case "1" -> adjustLogLevel();
-				case "2" -> adjustLogTimestamp();
-				case "3" -> adjustLogTimestampFormat();
+				case "1":
+					adjustLogLevel();
+					break;
+				case "2":
+					adjustLogTimestamp();
+					break;
+				case "3":
+					adjustLogTimestampFormat();
+					break;
 			}
 		} while (!input.equals("q"));
 
@@ -236,28 +230,48 @@ public class MainApp implements Constants {
 		};
 		String input = getOptions(menu, false);
 		switch (input){
-			case "1" -> Log.setLevel(Log.LEVEL_NONE);
-			case "2" -> Log.setLevel(Log.LEVEL_ERROR);
-			case "3" -> Log.setLevel(Log.LEVEL_WARN);
-			case "4" -> Log.setLevel(Log.LEVEL_INFO);
-			case "5" -> Log.setLevel(Log.LEVEL_DEBUG);
-			case "6" -> Log.setLevel(Log.LEVEL_VERBOSE);
+			case "1":
+				Log.setLevel(Log.LEVEL_NONE);
+				break;
+			case "2":
+				Log.setLevel(Log.LEVEL_ERROR);
+				break;
+			case "3":
+				Log.setLevel(Log.LEVEL_WARN);
+				break;
+			case "4":
+				Log.setLevel(Log.LEVEL_INFO);
+				break;
+			case "5":
+				Log.setLevel(Log.LEVEL_DEBUG);
+				break;
+			case "6":
+				Log.setLevel(Log.LEVEL_VERBOSE);
+				break;
 		}
 	}
 	private void adjustLogTimestamp(){
 		String[] menu = {"Enable", "Disable"};
 		String input = getOptions(menu, false);
 		switch (input){
-			case "1" -> Log.setTimestampEnabled(true);
-			case "2" -> Log.setTimestampEnabled(false);
+			case "1":
+				Log.setTimestampEnabled(true);
+				break;
+			case "2":
+				Log.setTimestampEnabled(false);
+				break;
 		}
 	}
 	private void adjustLogTimestampFormat(){
 		String[] menu = {"Detail", "Simple"};
 		String input = getOptions(menu, false);
 		switch (input){
-			case "1" -> Log.setTimestampFormat(Log.FORMAT_DETAIL);
-			case "2" -> Log.setTimestampFormat(Log.FORMAT_SIMPLE);
+			case "1":
+				Log.setTimestampFormat(Log.FORMAT_DETAIL);
+				break;
+			case "2":
+				Log.setTimestampFormat(Log.FORMAT_SIMPLE);
+				break;
 		}
 	}
 

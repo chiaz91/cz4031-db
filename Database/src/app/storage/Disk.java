@@ -3,8 +3,7 @@ package app.storage;
 import app.util.Log;
 import app.util.Utility;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class Disk {
     private static final String TAG = "Disk";
@@ -88,7 +87,7 @@ public class Disk {
         }
         int offset = block.insertRecord(record);
         recordCounts++;
-        Log.v(String.format("Record inserted at %d-%d", blockId, offset));
+//        Log.v(String.format("Record inserted at %d-%d", blockId, offset));
         return new Address(blockId, offset);
     }
 
@@ -121,6 +120,7 @@ public class Disk {
     }
 
     public ArrayList<Record> getRecords(ArrayList<Address> addresses ){
+        //addresses.sort(Comparator.comparingInt(Address::getBlockId));
         HashMap<Integer, Block> cache = new HashMap<>();
         ArrayList<Record> records = new ArrayList<>();
         int blockAccess = 0;
@@ -128,17 +128,19 @@ public class Disk {
         for (Address address: addresses) {
             // try search from cache first, before access from disk
             tempBlock = cache.get(address.getBlockId());
+            boolean cacheRead = tempBlock != null;
             if (tempBlock == null){
-                Log.v("Disk Access", "Read from Disk "+address.getBlockId());
                 tempBlock = getBlockAt(address.getBlockId());
+//                Log.v("Disk Access", String.format("Disk read: blockId=%d, offset=%d, block=%s", address.blockId, address.offset, tempBlock));
                 cache.put(address.getBlockId(), tempBlock);
                 blockAccess++;
             } else {// accessing the block from cache, no block access
-                Log.v("Disk Access", "Read from cache "+address.getBlockId());
+//                Log.v("Disk Access", String.format("Cache read: blockId=%d, offset=%d, block=%s", address.blockId, address.offset, tempBlock));
             }
 
-//			Log.d("TEST", addr + " -> "+tempRecord);
-            records.add( tempBlock.getRecordAt(address.getOffset()) );
+            Record record = tempBlock.getRecordAt(address.getOffset());
+			Log.v("Disk Access", String.format("%s read: blockId=%4d, \toffset=%d, \trecord=%s", cacheRead?"Cache":"Disk", address.blockId, address.offset, record));
+            records.add( record );
         }
         Log.i(TAG, String.format("Retrieved %d records with %d block access", records.size(), blockAccess));
         return records;
