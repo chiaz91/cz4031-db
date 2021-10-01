@@ -14,6 +14,7 @@ public class BPlusTree {
     Node root;
     int height;
     int nodeCount;
+    int deletedCount;
 
     public BPlusTree(int blockSize){
         // TODO: calculate n (max number of keys)?
@@ -25,6 +26,7 @@ public class BPlusTree {
         Log.i(TAG, "MinKeys: parent="+parentMinKeys+", leaf="+leafMinKeys);
         root = createFirst();
         nodeCount = 0;
+        deletedCount = 0;
     }
 
     // to create first node
@@ -247,6 +249,10 @@ public class BPlusTree {
                 }
             }
         }
+
+        Log.d("deletion", "number of nodes deleted = " + deletedCount);
+        nodeCount -= deletedCount;
+        treeStats();
     }
 
     // to update leafnode
@@ -317,6 +323,7 @@ public class BPlusTree {
 
             // delete node
             node.deleteNode();
+            deletedCount++;
         }
 
         // if able to borrow keys
@@ -387,6 +394,8 @@ public class BPlusTree {
                 parent.getChild(0).setIsRoot(true);
                 root = parent.getChild(0);
                 parent.deleteNode();
+                deletedCount++;
+                height--;
                 return;
             }
         }
@@ -436,6 +445,7 @@ public class BPlusTree {
             // delete after merging
             copy = parent.getParent();
             parent.deleteNode();
+            deletedCount++;
         }
 
         // if able to borrow keys
