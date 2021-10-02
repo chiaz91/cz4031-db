@@ -9,7 +9,7 @@ public class LeafNode extends Node {
     private static final String TAG = "Node.L";
 
     private ArrayList<Address> records;
-    private Node next;
+    private LeafNode next;
 
     // constructor
     public LeafNode() {
@@ -17,6 +17,7 @@ public class LeafNode extends Node {
         super();
         records = new ArrayList<Address>();
         setIsLeaf(true);
+        setNext(null);
     }
 
     // get arraylist of all records
@@ -55,23 +56,36 @@ public class LeafNode extends Node {
     }
 
     // get next leafnode
-    public Node getNext() {
+    public LeafNode getNext() {
 
         return next;
     }
 
     // set next leafnode
-    public void setNext(Node sister) {
+    public void setNext(LeafNode sister) {
 
         next = sister;
     }
 
+    // prepare leafnode for splitting
     public void splitPrep() {
 
         deleteKeys();
         records = new ArrayList<Address>();
     }
 
+    // delete a record from leafnode
+    public void deleteRecord(int index) {
+
+        deleteKey(index);
+        records.remove(index);
+    }
+
+    // delete all records
+    public void deleteRecords() {
+
+        records = new ArrayList<Address>();
+    }
 
     @Override
     void logStructure() {

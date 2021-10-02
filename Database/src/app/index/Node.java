@@ -102,10 +102,7 @@ public abstract class Node {
     // delete key from index
     public void deleteKey(int index) {
 
-        for (int i = index; i < keys.size() -2; i++) 
-            keys.add(i+1, keys.get(i));
-        
-        keys.remove(keys.size()-1);
+        keys.remove(index);
     }
 
     // for deleting keys before splitting
@@ -134,6 +131,33 @@ public abstract class Node {
             key = this.getKey(0);
 
         return key;
+    }
+
+    // delete the node
+    public void deleteNode() {
+
+        if (parent != null) {
+
+            parent.deleteChild(this);
+            parent = null;
+        }
+
+        if (this.isLeaf) {
+            
+            LeafNode copy = (LeafNode) this;
+            copy.deleteRecords();
+            copy.setNext(null);
+        }
+
+        else {
+
+            ParentNode copy = (ParentNode) this;
+            copy.deleteChildren();
+        }
+
+        isLeaf = false;
+        isRoot = false;
+        keys = new ArrayList<Integer>();
     }
 
     abstract void logStructure();

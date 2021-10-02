@@ -42,10 +42,9 @@ public class MainApp implements Constants {
 		doExperience3();
 		pause("Press any key to start experience 4");
 		doExperience4();
-//		pause("Press any key to start experience 5");
+		pause("Press any key to start experience 5");
 		doExperience5();
 	}
-
 
 	public void doExperience3(){
 		Log.i(TAG,"Experience 3 started, getting records with numVotes of 500");
@@ -73,75 +72,10 @@ public class MainApp implements Constants {
 		Log.i("Average rating="+avgRating);
 	}
 
-	// TODO: complete experience 5
 	public void doExperience5(){
-
+		index.deleteKey(1000);
+		// TODO: get back address and delete records from storage
 	}
-
-
-	// TODO: removing the test run
-	public void testRun(int blockSize) throws Exception {
-		// read records from data file
-		//TODO: generate sorted records (REMOVE LATER!!!!))
-		List<Record> records = Utility.generateRecords(55,6);
-		ArrayList<Integer> observingIdx = new ArrayList<>(Arrays.asList(9,10,54,55/*,324,325*/)); // for n=9, h increase on 10, 55, 325
-
-		disk = new Disk(Constants.DISK_SIZE, blockSize);
-		index = new BPlusTree(blockSize);
-
-		Log.i(TAG,"Before insert into disk");
-		int c =0;
-		Address recordAddr;
-		for (Record r: records) {
-			// inserting records into disk and create index!
-			recordAddr = disk.appendRecord(r);
-			index.insert( r.getNumVotes(), recordAddr);
-			// TODO: REMOVE TESTING
-			c++;
-			if ( observingIdx.contains(c) ){
-				Log.d("TEST", "OBSERVING ON "+c);
-				index.logStructure();
-			}
-		}
-		Log.i(TAG,"After insert into disk");
-		disk.log();
-		index.logStructure();
-
-
-		// TODO: TO DELETE FOLLOWING
-		// try search valid and invalid keys
-		for (int i = -1; i < 11; i++) {
-			testSearch(i);
-		}
-//		testSearch2(1,5);
-	}
-
-	private void testSearch(int key){
-		Log.d("TEST", "SEARCHING ON KEY "+key+"!!!");
-		ArrayList<Address> addresses = index.getRecordsWithKey(key);
-		ArrayList<Record> records =  disk.getRecords(addresses);
-		if (addresses.size() != records.size()){
-			Log.wtf("TEST", "ERROR!!!! Something Wrong");
-		}
-		for (int i=0; i<addresses.size(); i++) {
-			Log.d("TEST", addresses.get(i).toString() + " -> "+records.get(i).toString());
-		}
-		Log.d("TEST", "------------------------------------------------------");
-	}
-
-	private void testSearch2(int min, int max){
-		Log.d("TEST", "SEARCHING ON RANGE "+min+"~"+max+"!!!");
-		ArrayList<Address> addresses = index.getRecordsWithKeyInRange(min, max);
-		ArrayList<Record> records = disk.getRecords(addresses);
-		if (addresses.size() != records.size()){
-			Log.wtf("TEST", "ERROR!!!! Something Wrong");
-		}
-		for (int i=0; i<addresses.size(); i++) {
-			Log.d("TEST", addresses.get(i).toString() + " -> "+records.get(i).toString());
-		}
-		Log.d("TEST", "------------------------------------------------------");
-	}
-	// TEST RUN ABOVE
 
 
 	// app menu
@@ -270,17 +204,11 @@ public class MainApp implements Constants {
 	}
 
 
-
-
-
 	public static void main(String[] args) {
 		try {
 			Log.setLevel(Log.LEVEL_DEBUG);
 			MainApp app = new MainApp();
-			// TODO: change to display main menu later
 			app.displayMainMenu();
-//			app.run(BLOCK_SIZE_100);
-//			app.testRun(BLOCK_SIZE_100);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
