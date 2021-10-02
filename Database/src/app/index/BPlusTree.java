@@ -229,7 +229,7 @@ public class BPlusTree {
         LeafNode leaf;
 
         // while there are still records with given key value
-        while (getRecordsWithKey(key).size() != 0) {
+        while (getRecordsWithKey(key, false).size() != 0) {
 
             leaf = searchLeaf(key);
             keys = leaf.getKeys();
@@ -499,11 +499,17 @@ public class BPlusTree {
 
 
     // TODO for Experiment 3
-    public ArrayList<Address> getRecordsWithKey(int key){
+    public  ArrayList<Address> getRecordsWithKey(int key){
+        return getRecordsWithKey(key, true);
+    }
+
+    public ArrayList<Address> getRecordsWithKey(int key, boolean isVerbose){
         ArrayList<Address> result = new ArrayList<>();
         int blockAccess = 1; // access the root??
         int siblingAccess = 0;
-        Log.d("B+Tree.keySearch","[Node Access] Access root node");
+        if (isVerbose){
+            Log.d("B+Tree.keySearch","[Node Access] Access root node");
+        }
         Node curNode = root;
         ParentNode parentNode;
         // searching for leaf node with key
@@ -511,15 +517,19 @@ public class BPlusTree {
             parentNode = (ParentNode) curNode;
             for (int i=0; i<parentNode.getKeys().size(); i++) {
                 if ( key <= parentNode.getKey(i)){
-                    Log.v("B+Tree.keySearch", curNode.toString());
-                    Log.d("B+Tree.keySearch",String.format("[Node Access] follow pointer [%d]: key(%d)<=curKey(%d)", i, key, parentNode.getKey(i) ));
+                    if (isVerbose){
+                        Log.v("B+Tree.keySearch", curNode.toString());
+                        Log.d("B+Tree.keySearch",String.format("[Node Access] follow pointer [%d]: key(%d)<=curKey(%d)", i, key, parentNode.getKey(i) ));
+                    }
                     curNode = parentNode.getChild(i);
                     blockAccess++;
                     break;
                 }
                 if (i == parentNode.getKeys().size()-1){
-                    Log.v("B+Tree.keySearch", curNode.toString());
-                    Log.d("B+Tree.keySearch",String.format("[Node Access] follow pointer [%d+1]: last key and key(%d)>curKey(%d)", i, key, parentNode.getKey(i) ));
+                    if (isVerbose){
+                        Log.v("B+Tree.keySearch", curNode.toString());
+                        Log.d("B+Tree.keySearch",String.format("[Node Access] follow pointer [%d+1]: last key and key(%d)>curKey(%d)", i, key, parentNode.getKey(i) ));
+                    }
                     curNode = parentNode.getChild(i+1);
                     blockAccess++;
                     break;
@@ -556,9 +566,13 @@ public class BPlusTree {
         }
 
         if (siblingAccess > 0){
-            Log.d("B+Tree.keySearch", "[Node Access] "+siblingAccess+" sibling node access");
+            if (isVerbose) {
+                Log.d("B+Tree.keySearch", "[Node Access] " + siblingAccess + " sibling node access");
+            }
         }
-        Log.i("B+Tree.keySearch", String.format("input(%d): %d records found with %d node access", key, result.size(), blockAccess));
+        if (isVerbose) {
+            Log.i("B+Tree.keySearch", String.format("input(%d): %d records found with %d node access", key, result.size(), blockAccess));
+        }
         return result;
     }
 
@@ -585,11 +599,16 @@ public class BPlusTree {
     }
 
     // TODO for Experiment 4
-    public ArrayList<Address> getRecordsWithKeyInRange(int min, int max){
+    public ArrayList<Address> getRecordsWithKeyInRange(int min, int max) {
+        return getRecordsWithKeyInRange(min, max, true);
+    }
+    public ArrayList<Address> getRecordsWithKeyInRange(int min, int max, boolean isVerbose){
         ArrayList<Address> result = new ArrayList<>();
         int nodeAccess = 1; // access the root??
         int siblingAccess = 0;
-        Log.d("B+Tree.rangeSearch","[Node Access] Access root node");
+        if (isVerbose) {
+            Log.d("B+Tree.rangeSearch", "[Node Access] Access root node");
+        }
         Node curNode = root;
         ParentNode parentNode;
         // searching for leaf node with key
@@ -597,15 +616,19 @@ public class BPlusTree {
             parentNode = (ParentNode) curNode;
             for (int i=0; i<parentNode.getKeys().size(); i++) {
                 if ( min <= parentNode.getKey(i)){
-                    Log.v("B+Tree.rangeSearch", curNode.toString());
-                    Log.d("B+Tree.rangeSearch",String.format("[Node Access] follow pointer [%d]: min(%d)<=curKey(%d)", i, min, parentNode.getKey(i) ));
+                    if (isVerbose) {
+                        Log.v("B+Tree.rangeSearch", curNode.toString());
+                        Log.d("B+Tree.rangeSearch", String.format("[Node Access] follow pointer [%d]: min(%d)<=curKey(%d)", i, min, parentNode.getKey(i)));
+                    }
                     curNode = parentNode.getChild(i);
                     nodeAccess++;
                     break;
                 }
                 if (i == parentNode.getKeys().size()-1){
-                    Log.v("B+Tree.rangeSearch", curNode.toString());
-                    Log.d("B+Tree.rangeSearch",String.format("[Node Access] follow pointer [%d+1]: last key and min(%d)>curKey(%d)", i, min, parentNode.getKey(i) ));
+                    if (isVerbose) {
+                        Log.v("B+Tree.rangeSearch", curNode.toString());
+                        Log.d("B+Tree.rangeSearch", String.format("[Node Access] follow pointer [%d+1]: last key and min(%d)>curKey(%d)", i, min, parentNode.getKey(i)));
+                    }
                     curNode = parentNode.getChild(i+1);
                     nodeAccess++;
                     break;
@@ -641,9 +664,13 @@ public class BPlusTree {
             }
         }
         if (siblingAccess > 0){
-            Log.d("B+Tree.rangeSearch", "[Node Access] "+siblingAccess+" sibling node access");
+            if (isVerbose) {
+                Log.d("B+Tree.rangeSearch", "[Node Access] " + siblingAccess + " sibling node access");
+            }
         }
-        Log.i("B+Tree.rangeSearch", String.format("input(%d, %d): %d records found with %d node access", min, max, result.size(), nodeAccess));
+        if (isVerbose) {
+            Log.i("B+Tree.rangeSearch", String.format("input(%d, %d): %d records found with %d node access", min, max, result.size(), nodeAccess));
+        }
         return result;
     }
 
