@@ -3,9 +3,11 @@
 ## objective
 * annotate "SQL query" using its "QEP view" (operations/algorithms used during querying process)
 
-## dataset
+## dataset and tools
 
 * [TPC-H ][1]
+* [PostgreSQL][2]
+* [pgAdmin][3]
 
 ## submission files
 
@@ -39,3 +41,5 @@ prepare later
 
 
 [1]:http://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp
+[2]:https://www.postgresql.org/
+[3]:https://www.pgadmin.org/
