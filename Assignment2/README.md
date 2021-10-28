@@ -16,27 +16,41 @@
 * `preprocessing.py`: code for reading inputs and any preprocessing necessary to make your algorithm work
 * `project.py`: main file that invokes all the necessary procedures from these three files (Must executable with python IDE or command prompt)
 
-## config file
-prepare the `config.json` like below
+## Setting up project with Anaconda
 
-```json
-{
-	"db": {
-		"host": "localhost",
-		"dbname": "db4031",
-		"user" : "",
-		"pwd" : ""
-	}
-}
-```
+* create a `config.json` file in project root directory like below
 
-
-
-## required lib & framework
-
-prepare later
+  ```json
+  {
+  	"db": {
+  		"host": "localhost",
+  		"dbname": "db4031",
+  		"user" : "",
+  		"pwd" : ""
+  	}
+  }
+  ```
 
 
+* Create new environment
+
+  ```shell
+  conda create --name cz4031a2 python=3.9.6
+  ```
+
+* Activate environment
+
+  ```shell
+  conda activate cz4031a2
+  ```
+
+* Install required frameworks and libraries
+
+  ```shell
+  pip install -r requirements.txt
+  ```
+
+  
 
 
 
