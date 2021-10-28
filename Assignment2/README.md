@@ -57,3 +57,5 @@
 [1]:http://www.tpc.org/tpc_documents_current_versions/current_specifications5.asp
 [2]:https://www.postgresql.org/
 [3]:https://www.pgadmin.org/
+[4]:https://www.qt.io/qt-for-python
+[5]:https://doc.qt.io/qt-5/qtdesigner-manual.html
