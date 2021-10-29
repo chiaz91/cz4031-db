@@ -88,10 +88,17 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="panel_rght">
-        <item alignment="Qt::AlignTop">
+        <item>
          <widget class="QPushButton" name="btn_analyse">
           <property name="text">
            <string>Analyse</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignTop">
+         <widget class="QPushButton" name="btn_clear">
+          <property name="text">
+           <string>Clear</string>
           </property>
          </widget>
         </item>

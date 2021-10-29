@@ -1,7 +1,6 @@
-import sys
-from PyQt5 import uic, QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLabel, QTextEdit, QPushButton
-from qt_material import apply_stylesheet
+from PyQt5 import uic
+from PyQt5.QtWidgets import QMainWindow, QLabel, QTextEdit, QPushButton
+#from qt_material import apply_stylesheet
 
 class UI(QMainWindow):
     def __init__(self):
@@ -12,9 +11,15 @@ class UI(QMainWindow):
         self.input_sql = self.findChild(QTextEdit, "input_query")
         self.label_qep = self.findChild(QLabel, "text_plan")
         self.btn_analyse = self.findChild(QPushButton, "btn_analyse")
+        self.btn_clear = self.findChild(QPushButton, "btn_clear")
+        # init widgets
+        self.btn_clear.clicked.connect(self.clear)
+        
+    def clear(self):
+        self.input_sql.setPlainText("")
+        self.label_qep.setText("")
         
     def readInput(self):
-        #self.input_sql.setPlainText("")
         return self.input_sql.toPlainText()
     
     def setResult(self, text):
@@ -23,16 +28,17 @@ class UI(QMainWindow):
     def setOnClicked(self, callback):
         self.btn_analyse.clicked.connect(callback)
 
-
+'''
 # maybe this part move to main script
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     apply_stylesheet(app, theme="light_cyan_500.xml")
     window = UI()
-    window.show()
     
     # assigning callback
     window.setOnClicked(
         lambda: window.setResult( window.readInput() )
     )
+    window.show()
     sys.exit(app.exec_())
+'''
