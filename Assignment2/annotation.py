@@ -3,13 +3,17 @@ class Annotator:
     def __init__(self):
         self.iCount = 0
 
+    #wrapper function to do preprocessing on the qep and to only return finished string
     def wrapper(self, qep):
         return self.annotate(qep[0][0][0]['Plan'], True)[1]
 
     #TODO filters
     def annotate(self, query, first = False):
         
+        # for storing previous tables since they are not included in the qep
         joinTables = []
+
+        #result string to be combined with current iter's output and returned
         result = ""
 
         if "Plans" in query:
@@ -17,6 +21,9 @@ class Annotator:
                 temp = self.annotate(plan)
                 joinTables.append(temp[0])
                 result += temp[1]
+
+        
+        # python 3.8 has no switch function :(
 
         if query["Node Type"] == 'Seq Scan':
             table = query["Relation Name"]
