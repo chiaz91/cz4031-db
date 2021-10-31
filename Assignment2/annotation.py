@@ -3,9 +3,13 @@ class Annotator:
     def __init__(self):
         self.iCount = 0
 
-    #wrapper function to do preprocessing on the qep and to only return finished string
+    # wrapper function to do preprocessing on the qep and to only return finished string
     def wrapper(self, qep):
-        return self.annotate(qep[0][0][0]['Plan'], True)[1]
+        # just to make it a bit nicer
+        final = self.annotate(qep[0][0][0]['Plan'], True)[1]
+        final = final[:-3]
+        final += " to get the final result."
+        return final 
 
     #TODO filters
     def annotate(self, query, first = False):
@@ -13,7 +17,7 @@ class Annotator:
         # for storing previous tables since they are not included in the qep
         joinTables = []
 
-        #result string to be combined with current iter's output and returned
+        # result string to be combined with current iter's output and returned
         result = ""
 
         if "Plans" in query:
