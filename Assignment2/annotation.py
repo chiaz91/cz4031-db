@@ -2,6 +2,7 @@ class Annotator:
 
     def __init__(self):
         self.iCount = 0
+        self.stepCount = 0
 
     # wrapper function to do preprocessing on the qep and to only return finished string
     def wrapper(self, qep):
@@ -26,25 +27,27 @@ class Annotator:
                 joinTables.append(temp[0])
                 result += temp[1]
 
-        
+
+        self.stepCount += 1
+        result += "Step {}: ".format(self.stepCount)
         # python 3.8 has no switch function :(
 
         if query["Node Type"] == 'Seq Scan':
             table = query["Relation Name"]
             name = query["Alias"]
-            annie = "perform sequential scan on table {} as {}. \n".format(table, name)
+            annie = "Perform sequential scan on table {} as {}. \n".format(table, name)
             return table, result + annie
 
         elif query["Node Type"] == 'Index Scan':
             table = query["Relation Name"]
             name = query["Alias"]
-            annie = "perform index scan on table {} as {} using index {} where {}. \n".format(table, name, query["Index Name"], query["Index Cond"])
+            annie = "Perform index scan on table {} as {} using index {} where {}. \n".format(table, name, query["Index Name"], query["Index Cond"])
             return table, result + annie
 
         elif query["Node Type"] == 'Index-Only Scan':
             table = query["Relation Name"]
             name = query["Alias"]
-            annie = "perform index scan on table {} as {} using index {} where {}. \n".format(table, name, query["Index Name"], query["Index Cond"])
+            annie = "Perform index scan on table {} as {} using index {} where {}. \n".format(table, name, query["Index Name"], query["Index Cond"])
             return table, result + annie
 
         # elif query["Node Type"] == 'Bitmap Heap Scan':
@@ -79,7 +82,7 @@ class Annotator:
         
         elif query["Node Type"] == 'Nested Loop':
             self.iCount += 1
-            annie = "perform a nested loop join on tables {} and {}".format(joinTables[0], joinTables[1])
+            annie = "Perform a nested loop join on tables {} and {}".format(joinTables[0], joinTables[1])
             if "Join Filter" in query:
                 annie += " under the condition {}".format(joinTables[0], joinTables[1], query["Join Filter"])
             if not first:
@@ -89,7 +92,7 @@ class Annotator:
         
         elif query["Node Type"] == 'Hash Join':
             self.iCount += 1
-            annie = "perform a hash join on tables {} and {} under the condition {}".format(joinTables[0], joinTables[1], query["Hash Cond"])
+            annie = "Perform a hash join on tables {} and {} under the condition {}".format(joinTables[0], joinTables[1], query["Hash Cond"])
             if not first:
                 annie += " to get intermediate table T{}. \n".format(self.iCount)
             else: annie += ". \n"
@@ -97,7 +100,7 @@ class Annotator:
 
         elif query["Node Type"] == 'Merge Join':
             self.iCount += 1
-            annie = "perform a merge join on tables {} and {} under the condition {}".format(joinTables[0], joinTables[1], query["Merge Cond"])
+            annie = "Perform a merge join on tables {} and {} under the condition {}".format(joinTables[0], joinTables[1], query["Merge Cond"])
             if not first:
                 annie += " to get intermediate table T{}. \n".format(self.iCount)
             else: annie += ". \n"
@@ -105,7 +108,7 @@ class Annotator:
         
         elif query["Node Type"] == 'Aggregate':
             self.iCount += 1
-            annie = "perform aggregate on table {}".format(joinTables[0])
+            annie = "Perform aggregate on table {}".format(joinTables[0])
             if not first:
                 annie += " to get intermediate table T{}. \n".format(self.iCount)
             else: annie += ". \n"
@@ -122,7 +125,7 @@ class Annotator:
         
         elif query["Node Type"] == 'Gather':
             self.iCount += 1
-            annie = ("perform gather on table {}".format(joinTables[0]))
+            annie = ("Perform gather on table {}".format(joinTables[0]))
             if not first:
                 annie += " to get intermediate table T{}. \n".format(self.iCount)
             else: annie += ". \n"
@@ -139,7 +142,7 @@ class Annotator:
 
         
         elif query["Node Type"] == 'Hash':
-            annie = "perform hashing on table {}. \n".format(joinTables[0])
+            annie = "Perform hashing on table {}. \n".format(joinTables[0])
             return joinTables[0], result + annie
 
         # elif query["Node Type"] == 'HashAggregate':
@@ -158,7 +161,7 @@ class Annotator:
 
 
         elif query["Node Type"] == 'Materialize':
-            annie = "materialize table {}. \n".format(joinTables[0])
+            annie = "Materialize table {}. \n".format(joinTables[0])
             return joinTables[0], result + annie
 
         # elif query["Node Type"] == 'MergeAppend':
@@ -183,7 +186,7 @@ class Annotator:
 
 
         elif query["Node Type"] == 'Sort':
-            annie = "perform a sort on table {} with sort key {}. \n".format(joinTables[0], query["Sort Key"])
+            annie = "Perform a sort on table {} with sort key {}. \n".format(joinTables[0], query["Sort Key"])
             return joinTables[0], result + annie
 
         # elif query["Node Type"] == 'Unique':
@@ -192,7 +195,7 @@ class Annotator:
         # elif query["Node Type"] == 'WindowAgg':
 
         else:
-            annie = "performing {}. \n".format(query["Node Type"])
+            annie = "Perform {}. \n".format(query["Node Type"])
             return joinTables[0], result + annie
 
 
