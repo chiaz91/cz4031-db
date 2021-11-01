@@ -12,11 +12,14 @@ class UI(QMainWindow):
         self.label_qep = self.findChild(QLabel, "text_plan")
         self.btn_analyse = self.findChild(QPushButton, "btn_analyse")
         self.btn_clear = self.findChild(QPushButton, "btn_clear")
+        self.list_database = self.findChild(QComboBox, "combo_databases")
         self.tree_attrs = self.findChild(QTreeWidget, "tree_attrs")
         # init widgets
-        self.btn_clear.clicked.connect(self.clear)
         self.tree_attrs.setHeaderLabels(["Schema"])
+        self.btn_clear.clicked.connect(self.clear)
+        self.list_database.currentIndexChanged.connect(self._onDatabaseChanged)
         self.tree_attrs.itemDoubleClicked.connect(self._onSchemaItemDoubleClicked)
+        
 
     def clear(self):
         self.input_sql.setPlainText("")
@@ -30,24 +33,39 @@ class UI(QMainWindow):
     
     def setResult(self, text):
         self.label_qep.setText(text)
-    
-    def setOnClicked(self, callback):
-        self.btn_analyse.clicked.connect(callback)
-        
+            
     def setSchema(self, schema=None):
         self.tree_attrs.clear()
+        if schema is None:
+            return
         for table in schema:
             table_item = QTreeWidgetItem([table])
-            table_item
             for attr in schema[table]:
                 attr_item =  QTreeWidgetItem([attr])
                 table_item.addChild(attr_item)  
             self.tree_attrs.addTopLevelItem(table_item)
+            
+    # callback setter
+    def setOnAnalyseClicked(self, callback):
+        if callback:
+            self.btn_analyse.clicked.connect(callback)
+        
+    def setOnDatabaseChanged(self, callback):
+        self.cb_db_changed = callback
+        
+    def setListDatabase(self, list_db=["TPC-H"]):
+        self.list_database.clear()
+        self.list_database.addItems(list_db)
+
+            
+    # private events handling 
+    def _onDatabaseChanged(self, cur_index):
+        if hasattr(self, "cb_db_changed"):
+            self.cb_db_changed()
         
     def _onSchemaItemDoubleClicked(self, item, col):
         # append item text to input text area
-        old_input = self.readInput()
-        self.setInput( "{} {} ".format(old_input, item.text(col)) )
+        self.setInput( f"{self.readInput()} {item.text(col)} ") 
         
 
 

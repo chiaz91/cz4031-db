@@ -1,68 +1,106 @@
 import sys 
 import time
+import json
+import psycopg2 # need install
 from PyQt5.QtWidgets import QApplication # need install
 from qt_material import apply_stylesheet # need install
 from interface import UI
 
-import json
-import psycopg2 # need install
 
+# allow use of with syntax
+class DatabaseCursor(object):
+    def __init__(self, config):
+        self.config = config
 
-def analyseQuery(ui, conn):
-    query = ui.readInput()
-    if not query:
-        print("query is empty")
-        return
-    print("query: %s"%query)
-    # simuate query
-    if conn:
-        cursor = conn.cursor()
-        cursor.execute("EXPLAIN (FORMAT JSON) " + query)
-        plan = cursor.fetchall()
-        # maybe do anntation here
-        plan_str = str(plan)
-        ui.setResult( plan_str )
+    def __enter__(self):
+        self.conn = psycopg2.connect(
+            host=self.config["host"],
+            dbname=self.config["dbname"],
+            user=self.config["user"],
+            password=self.config["pwd"]
+            # add port?
+        )   
+        self.cur = self.conn.cursor()
+        #self.cur.execute("SET search_path TO " + self.config['schema'])
+        return self.cur
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # some logic to commit/rollback
+        self.conn.close()
+
+class Program():
+    def __init__(self):
+        with open("config.json", "r") as file:
+            self.config = json.load(file)
+        # init ui components
+        self.app = QApplication(sys.argv)
+        apply_stylesheet(self.app, theme="light_cyan_500.xml")
+        self.window = UI()
+        self.window.setOnDatabaseChanged( lambda: self.onDatabaseChanged())
+        self.window.setOnAnalyseClicked( lambda: self.analyseQuery() )
+        self.window.setListDatabase(["TPC-H", "Test"])
+
+    def run(self):
+        self.window.show()
+        sys.exit(self.app.exec_())
         
-def updateSchema(ui, conn):
-    query = "SELECT table_name, column_name, data_type, character_maximum_length as length FROM information_schema.columns WHERE table_schema='public' ORDER BY table_name, ordinal_position"
-    if conn:
-        cursor = conn.cursor()
-        cursor.execute(query)
-        response = cursor.fetchall()
+    def onDatabaseChanged(self):
+        # check cur database, update schema?
+        cur_db = self.window.list_database.currentText()
+        print(f"curr db is {cur_db}")
+        if (cur_db == "TPC-H"):
+            self.db_config = self.config["db"]
+        else:
+            self.db_config = None
+        self.updateSchema()
+
+    def hasDbConfig(self):
+        if not hasattr(self, "db_config"): 
+            return False
+        if self.db_config == None:
+            return False
+        return True
+
+    def analyseQuery(self):
+        if not self.hasDbConfig():
+            # show error?
+            return
+        try:
+            query = self.window.readInput()
+            if not query:
+                print("query is empty")
+                return
+            print("query: %s"%query)
+            with DatabaseCursor(self.db_config) as cursor:
+                cursor.execute("EXPLAIN (FORMAT JSON) " + query)
+                plan = cursor.fetchall()
+                # maybe do anntation here
+                plan_str = str(plan)
+                self.window.setResult( plan_str )
+        except Exception as e:
+            print(str(e)) 
+
+    def updateSchema(self):
+        if not self.hasDbConfig(): 
+            self.window.setSchema(None)
+            return
         
-        # parse response as dictionary 
-        schema = {}
-        for item in response:
-            attrs = schema.get(item[0], [])
-            attrs.append(item[1])
-            schema[item[0]] = attrs
-        ui.setSchema(schema)
+        with DatabaseCursor(self.db_config) as cursor:
+            query = "SELECT table_name, column_name, data_type, character_maximum_length as length FROM information_schema.columns WHERE table_schema='public' ORDER BY table_name, ordinal_position"
+            cursor.execute(query)
+            response = cursor.fetchall()
+            
+            # parse response as dictionary 
+            schema = {}
+            for item in response:
+                # cols are table_name, column_name, data_type, length (nullable)
+                attrs = schema.get(item[0], [])
+                attrs.append(item[1])
+                schema[item[0]] = attrs
+            self.window.setSchema(schema)
+            
+    
     
 if __name__ == "__main__":
-    # load config file
-    with open("config.json", "r") as file:
-        config = json.load(file)
+    Program().run()
 
-    # connect to database
-    db_config = config["db"]
-    conn = psycopg2.connect(
-        host=db_config["host"],
-        dbname=db_config["dbname"],
-        user=db_config["user"],
-        password=db_config["pwd"]
-    )
-    if conn:
-        print("Connected to database %s sucessfully!" % db_config["dbname"])
-    else:
-        print("Connection failed.")
-        
-    # show app ui
-    app = QApplication(sys.argv)
-    apply_stylesheet(app, theme="light_cyan_500.xml")
-    window = UI()
-    # assigning callback
-    updateSchema(window, conn)
-    window.setOnClicked( lambda: analyseQuery(window, conn) )
-    
-    window.show()
-    sys.exit(app.exec_())

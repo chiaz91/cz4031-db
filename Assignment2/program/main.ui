@@ -26,6 +26,9 @@
       <item>
        <layout class="QVBoxLayout" name="left">
         <item>
+         <widget class="QComboBox" name="combo_databases"/>
+        </item>
+        <item>
          <widget class="QTreeWidget" name="tree_attrs">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
