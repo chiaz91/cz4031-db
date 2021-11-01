@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>832</width>
     <height>600</height>
    </rect>
   </property>
@@ -24,7 +24,38 @@
     <item>
      <layout class="QHBoxLayout" name="panels">
       <item>
-       <layout class="QVBoxLayout" name="panel_left">
+       <layout class="QVBoxLayout" name="left">
+        <item>
+         <widget class="QTreeWidget" name="tree_attrs">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="columnCount">
+           <number>1</number>
+          </property>
+          <attribute name="headerVisible">
+           <bool>true</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="main">
         <item>
          <widget class="QGroupBox" name="group_input">
           <property name="sizePolicy">
@@ -87,7 +118,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="panel_rght">
+       <layout class="QVBoxLayout" name="right">
         <item>
          <widget class="QPushButton" name="btn_analyse">
           <property name="text">

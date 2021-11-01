@@ -22,6 +22,21 @@ def analyseQuery(ui, conn):
         # maybe do anntation here
         plan_str = str(plan)
         ui.setResult( plan_str )
+        
+def updateSchema(ui, conn):
+    query = "SELECT table_name, column_name, data_type, character_maximum_length as length FROM information_schema.columns WHERE table_schema='public' ORDER BY table_name, ordinal_position"
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute(query)
+        response = cursor.fetchall()
+        
+        # parse response as dictionary 
+        schema = {}
+        for item in response:
+            attrs = schema.get(item[0], [])
+            attrs.append(item[1])
+            schema[item[0]] = attrs
+        ui.setSchema(schema)
     
 if __name__ == "__main__":
     # load config file
@@ -46,6 +61,7 @@ if __name__ == "__main__":
     apply_stylesheet(app, theme="light_cyan_500.xml")
     window = UI()
     # assigning callback
+    updateSchema(window, conn)
     window.setOnClicked( lambda: analyseQuery(window, conn) )
     
     window.show()

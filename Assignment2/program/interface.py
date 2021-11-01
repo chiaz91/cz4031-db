@@ -1,5 +1,5 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QLabel, QTextEdit, QPushButton
+from PyQt5.QtWidgets import *
 #from qt_material import apply_stylesheet
 
 class UI(QMainWindow):
@@ -12,9 +12,12 @@ class UI(QMainWindow):
         self.label_qep = self.findChild(QLabel, "text_plan")
         self.btn_analyse = self.findChild(QPushButton, "btn_analyse")
         self.btn_clear = self.findChild(QPushButton, "btn_clear")
+        self.tree_attrs = self.findChild(QTreeWidget, "tree_attrs")
         # init widgets
         self.btn_clear.clicked.connect(self.clear)
-        
+        self.tree_attrs.setHeaderLabels(["Schema"])
+        self.tree_attrs.itemDoubleClicked.connect(self._onSchemaItemDoubleClicked)
+
     def clear(self):
         self.input_sql.setPlainText("")
         self.label_qep.setText("")
@@ -22,11 +25,31 @@ class UI(QMainWindow):
     def readInput(self):
         return self.input_sql.toPlainText()
     
+    def setInput(self, text):
+        self.input_sql.setPlainText(text)
+    
     def setResult(self, text):
         self.label_qep.setText(text)
     
     def setOnClicked(self, callback):
         self.btn_analyse.clicked.connect(callback)
+        
+    def setSchema(self, schema=None):
+        self.tree_attrs.clear()
+        for table in schema:
+            table_item = QTreeWidgetItem([table])
+            table_item
+            for attr in schema[table]:
+                attr_item =  QTreeWidgetItem([attr])
+                table_item.addChild(attr_item)  
+            self.tree_attrs.addTopLevelItem(table_item)
+        
+    def _onSchemaItemDoubleClicked(self, item, col):
+        # append item text to input text area
+        old_input = self.readInput()
+        self.setInput( "{} {} ".format(old_input, item.text(col)) )
+        
+
 
 '''
 # maybe this part move to main script
@@ -34,6 +57,15 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     apply_stylesheet(app, theme="light_cyan_500.xml")
     window = UI()
+    
+    # fake schema
+    schema = {
+        "tabel1":["item_1", "item_2", "item_3"],
+        "tabel2":["item_4", "item_5", "item_6"],
+        "tabel3":["item_7", "item_8", "item_9"],
+        "tabel4":["item_10", "item_11", "item_12"]
+    }
+    window.setSchema(schema)
     
     # assigning callback
     window.setOnClicked(
