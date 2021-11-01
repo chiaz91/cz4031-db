@@ -1,0 +1,3 @@
+psycopg2==2.9.1
+PyQt5==5.15.5
+qt-material==2.8.12
