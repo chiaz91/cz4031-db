@@ -19,7 +19,18 @@ class UI(QMainWindow):
         self.btn_clear.clicked.connect(self.clear)
         self.list_database.currentIndexChanged.connect(self._onDatabaseChanged)
         self.tree_attrs.itemDoubleClicked.connect(self._onSchemaItemDoubleClicked)
-        
+    
+    def showError(self, errMessage, execption=None):
+        dialog = QMessageBox()
+        dialog.setStyleSheet("QLabel{min-width: 300px;}");
+        dialog.setWindowTitle("Error")
+        #dialog.setIcon(QMessageBox.Warning)
+        dialog.setText(errMessage)
+        if execption is not None:
+            dialog.setDetailedText(str(execption))
+        dialog.setStandardButtons(QMessageBox.Ok)
+        #dialog.buttonClicked.connect(cb)
+        dialog.exec_()
 
     def clear(self):
         self.input_sql.setPlainText("")

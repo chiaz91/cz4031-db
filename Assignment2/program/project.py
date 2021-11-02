@@ -38,16 +38,16 @@ class Program():
         self.window = UI()
         self.window.setOnDatabaseChanged( lambda: self.onDatabaseChanged())
         self.window.setOnAnalyseClicked( lambda: self.analyseQuery() )
-        self.window.setListDatabase(["TPC-H", "Test"])
 
     def run(self):
         self.window.show()
+        self.window.setListDatabase(["TPC-H", "Test"])
         sys.exit(self.app.exec_())
         
     def onDatabaseChanged(self):
         # check cur database, update schema?
         cur_db = self.window.list_database.currentText()
-        print(f"curr db is {cur_db}")
+        print(f"Current selected database is {cur_db}")
         if (cur_db == "TPC-H"):
             self.db_config = self.config["db"]
         else:
@@ -63,7 +63,7 @@ class Program():
 
     def analyseQuery(self):
         if not self.hasDbConfig():
-            # show error?
+            self.window.showError("Database configuration is not found")
             return
         try:
             query = self.window.readInput()
@@ -78,27 +78,31 @@ class Program():
                 plan_str = str(plan)
                 self.window.setResult( plan_str )
         except Exception as e:
-            print(str(e)) 
+            print(str(e))
+            self.window.showError("Unable to analyse query!", e)
 
     def updateSchema(self):
         if not self.hasDbConfig(): 
             self.window.setSchema(None)
+            self.window.showError("Database configuration is not found")
             return
-        
-        with DatabaseCursor(self.db_config) as cursor:
-            query = "SELECT table_name, column_name, data_type, character_maximum_length as length FROM information_schema.columns WHERE table_schema='public' ORDER BY table_name, ordinal_position"
-            cursor.execute(query)
-            response = cursor.fetchall()
-            
-            # parse response as dictionary 
-            schema = {}
-            for item in response:
-                # cols are table_name, column_name, data_type, length (nullable)
-                attrs = schema.get(item[0], [])
-                attrs.append(item[1])
-                schema[item[0]] = attrs
-            self.window.setSchema(schema)
-            
+        try:
+            with DatabaseCursor(self.db_config) as cursor:
+                query = "SELECT table_name, column_name, data_type, character_maximum_length as length FROM information_schema.columns WHERE table_schema='public' ORDER BY table_name, ordinal_position"
+                cursor.execute(query)
+                response = cursor.fetchall()
+
+                # parse response as dictionary 
+                schema = {}
+                for item in response:
+                    # cols are table_name, column_name, data_type, length (nullable)
+                    attrs = schema.get(item[0], [])
+                    attrs.append(item[1])
+                    schema[item[0]] = attrs
+                self.window.setSchema(schema)
+        except Exception as e:
+            print(str(e))
+            self.window.showError("Unable to retrieve schema information!", e)
     
     
 if __name__ == "__main__":
