@@ -4,7 +4,8 @@ import json
 import psycopg2 # need install
 from PyQt5.QtWidgets import QApplication # need install
 from qt_material import apply_stylesheet # need install
-from interface import UI
+from interface import *
+from annotation import *
 
 
 # allow use of with syntax
@@ -70,13 +71,15 @@ class Program():
             if not query:
                 print("query is empty")
                 return
-            print("query: %s"%query)
+            print("query: \n%s"%query)
             with DatabaseCursor(self.db_config) as cursor:
                 cursor.execute("EXPLAIN (FORMAT JSON) " + query)
                 plan = cursor.fetchall()
-                # maybe do anntation here
-                plan_str = str(plan)
-                self.window.setResult( plan_str )
+                print("qep: \n%s"%plan)
+                plan_annotated = Annotator().wrapper(plan)
+                print("annotated qep: \n%s"%plan_annotated)
+                self.window.setResult( plan_annotated )
+                
         except Exception as e:
             print(str(e))
             self.window.showError("Unable to analyse query!", e)
