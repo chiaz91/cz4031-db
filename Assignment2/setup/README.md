@@ -43,7 +43,7 @@
 - IMDb dataset can be downloaded from: https://datasets.imdbws.com/
 - title.ratings.tsv.gz and title.basics.tsv.gz will be used in this section.
 - Following steps 5-6, create a second database with the name db4031-imdb
-  <img src="pictures/IMDb1-create imdb db"/>
+  <img src="pictures/IMDb1-create imdb db.png"/>
 - In the Query Tool panel, open the predefined schema creation query file (`db_imdb_init.sql`)
   <img src="pictures/IMDb2-create table using query tool.png"/>
 - clicked on run button to execute queries
