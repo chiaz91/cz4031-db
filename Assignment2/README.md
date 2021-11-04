@@ -16,9 +16,15 @@
 
   ```json
   {
-  	"db": {
+  	"TPC-H": {
   		"host": "localhost",
   		"dbname": "db4031",
+  		"user" : "database_username",
+  		"pwd" : "database_password"
+  	},
+      "IMDB": {
+  		"host": "localhost",
+  		"dbname": "imdb",
   		"user" : "database_username",
   		"pwd" : "database_password"
   	}

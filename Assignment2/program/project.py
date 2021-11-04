@@ -3,9 +3,13 @@ import time
 import json
 import psycopg2 # need install
 from PyQt5.QtWidgets import QApplication # need install
-from qt_material import apply_stylesheet # need install
+from qt_material import apply_stylesheet #, list_themes # need install
 from interface import *
 from annotation import *
+
+# extract hard coded values
+FILE_CONFIG = "config.json"
+FILE_APP_THEME = "light_cyan_500.xml" #list_themes()[12]
 
 
 # allow use of with syntax
@@ -31,28 +35,27 @@ class DatabaseCursor(object):
 
 class Program():
     def __init__(self):
-        with open("config.json", "r") as file:
+        with open(FILE_CONFIG, "r") as file:
             self.config = json.load(file)
         # init ui components
         self.app = QApplication(sys.argv)
-        apply_stylesheet(self.app, theme="light_cyan_500.xml")
+        apply_stylesheet(self.app, theme=FILE_APP_THEME)
         self.window = UI()
         self.window.setOnDatabaseChanged( lambda: self.onDatabaseChanged())
         self.window.setOnAnalyseClicked( lambda: self.analyseQuery() )
 
     def run(self):
         self.window.show()
-        self.window.setListDatabase(["TPC-H", "Test"])
+        list_db = list(self.config.keys() )
+        print(f"List of database configs from json file: {list_db}")
+        self.window.setListDatabase(list_db)
         sys.exit(self.app.exec_())
         
     def onDatabaseChanged(self):
         # check cur database, update schema?
         cur_db = self.window.list_database.currentText()
         print(f"Current selected database is {cur_db}")
-        if (cur_db == "TPC-H"):
-            self.db_config = self.config["db"]
-        else:
-            self.db_config = None
+        self.db_config = self.config[cur_db]
         self.updateSchema()
 
     def hasDbConfig(self):
