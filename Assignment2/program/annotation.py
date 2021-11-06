@@ -57,7 +57,9 @@ class Annotator:
         elif query["Node Type"] == 'Index-Only Scan':
             table = query["Relation Name"]
             name = query["Alias"]
-            annie = "Perform index scan on table {} as {} using index {} where {}".format(table, name, query["Index Name"], query["Index Cond"])
+            annie = "Perform index scan on table {} as {} using index on {}".format(table, name, query["Index Name"])
+            if "Index Cond" in query:
+                annie += " where {}".format(query["Index Cond"])
             if "Filter" in query:
                 annie += " with filter {}".format(query["Filter"])
             annie += ". \n"
@@ -121,7 +123,9 @@ class Annotator:
         
         elif query["Node Type"] == 'Hash Join':
             self.iCount += 1
-            annie = "Perform a hash join on tables {} and {} under the condition {}".format(joinTables[0], joinTables[1], query["Hash Cond"])
+            annie = "Perform a hash join on tables {} and {}".format(joinTables[0], joinTables[1])
+            if "Hash Cond" in query:
+                annie += " under the condition {}".format(query["Hash Cond"])
             if "Filter" in query:
                 annie += " with filter {}".format(query["Filter"])
             if not first:
@@ -132,7 +136,9 @@ class Annotator:
 
         elif query["Node Type"] == 'Merge Join':
             self.iCount += 1
-            annie = "Perform a merge join on tables {} and {} under the condition {}".format(joinTables[0], joinTables[1], query["Merge Cond"])
+            annie = "Perform a merge join on tables {} and {}".format(joinTables[0], joinTables[1])
+            if "Merge Cond" in query:
+                annie += " under the condition {}".format(query["Merge Cond"])
             if "Filter" in query:
                 annie += " with filter {}".format(query["Filter"])
             annie += ". \n"
