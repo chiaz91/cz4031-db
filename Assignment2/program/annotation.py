@@ -45,7 +45,9 @@ class Annotator:
         elif query["Node Type"] == 'Index Scan':
             table = query["Relation Name"]
             name = query["Alias"]
-            annie = "Perform index scan on table {} as {} using index {} where {}".format(table, name, query["Index Name"], query["Index Cond"])
+            annie = "Perform index scan on table {} as {} using index on {}".format(table, name, query["Index Name"])
+            if "Index Cond" in query:
+                annie += " where {}".format(query["Index Cond"])
             if "Filter" in query:
                 annie += " with filter {}".format(query["Filter"])
             annie += ". \n"
