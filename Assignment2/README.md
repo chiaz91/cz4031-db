@@ -12,7 +12,7 @@
 
 ## Setting up project
 
-* Create a `config.json` file in project root directory like below, more database configurations can appened if necessary 
+* Create a `config.json` file in project root directory like below, more database configurations can appended if necessary 
 
   ```json
   {
