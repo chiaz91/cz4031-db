@@ -22,8 +22,8 @@ class DatabaseCursor(object):
             host=self.config["host"],
             dbname=self.config["dbname"],
             user=self.config["user"],
-            password=self.config["pwd"]
-            # add port?
+            password=self.config["pwd"],
+            port=self.config["port"]
         )   
         self.cur = self.conn.cursor()
         #self.cur.execute("SET search_path TO " + self.config['schema'])
@@ -105,6 +105,11 @@ class Program():
                     attrs = schema.get(item[0], [])
                     attrs.append(item[1])
                     schema[item[0]] = attrs
+                # log schema
+                print("Database schema as follow: ")
+                for t, table in enumerate(schema):
+                    print(t+1, table, schema.get(table))
+                
                 self.window.setSchema(schema)
         except Exception as e:
             print(str(e))
