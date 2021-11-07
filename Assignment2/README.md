@@ -12,7 +12,7 @@
 
 ## Setting up project
 
-* Create a `config.json` file in project root directory like below
+* Create a `config.json` file in project root directory like below, more database configurations can appened if necessary 
 
   ```json
   {
@@ -20,13 +20,15 @@
   		"host": "localhost",
   		"dbname": "db4031",
   		"user" : "database_username",
-  		"pwd" : "database_password"
+  		"pwd" : "database_password",
+  		"port" : "5432"
   	},
   	"IMDB": {
   		"host": "localhost",
   		"dbname": "imdb",
   		"user" : "database_username",
-  		"pwd" : "database_password"
+  		"pwd" : "database_password",
+  		"port" : "5432"
   	}
   }
   ```
