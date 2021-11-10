@@ -51,14 +51,18 @@
 
 ## Executing the program
 
-* Ensure [PostgreSQL][2] database is hosted, databases set up instruction can be found in set up folder
+* Ensure Python 3 is installed
+
+* Ensure [PostgreSQL][2] database is hosted, databases set up instruction can be found in `\setup` folder
+
 * Execute the program with following command
 
   ```shell
   python project.py
   ```
+  
 * Program should be started like below
-<img src="setup/pictures/demo.png"/>
+  <img src="setup/pictures/demo.png"/>
 
 
 
