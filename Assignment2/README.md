@@ -53,7 +53,7 @@
 
 * Ensure Python 3 is installed
 
-* Ensure [PostgreSQL][2] database is hosted, databases set up instruction can be found in `\setup` folder
+* Ensure [PostgreSQL][3] database is hosted, databases set up instruction can be found in `\setup` folder
 
 * Execute the program with following command
 
